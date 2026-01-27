@@ -13,7 +13,9 @@
 
 Docker setup for [Moltbot](https://molt.bot) — an AI personal assistant with security hardening out of the box.
 
-> **Moltbot** is an AI assistant that runs on your own machine. It connects to LLMs (Claude, GPT, Gemini, etc.), has tools (web search, code execution, file management, browser control), and talks to you via Telegram, WhatsApp, Discord, webchat, and more. This repo gives you a ready-to-run Docker setup with security best practices baked in.
+> **Moltbot** (formerly Clawdbot) is an AI assistant that runs on your own machine. It connects to LLMs (Claude, GPT, Gemini, etc.), has tools (web search, code execution, file management, browser control), and talks to you via Telegram, WhatsApp, Discord, webchat, and more. This repo gives you a ready-to-run Docker setup with security best practices baked in.
+
+> ⚠️ **Note (Jan 2026):** The Moltbot rebrand is in progress. The npm package `moltbot` is currently a compatibility shim. This Docker setup installs `clawdbot` (the full runtime) and will automatically switch to `moltbot` when the full package is published. No action needed from you — just rebuild when a new version is announced.
 
 ---
 

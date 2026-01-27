@@ -14,7 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Moltbot
-RUN npm install -g moltbot
+# Install Moltbot (currently installs clawdbot as the runtime engine)
+# The 'moltbot' npm package will become the full runtime in a future release
+RUN npm install -g clawdbot
 
 # Install Faster Whisper for audio transcription (optional, may fail on some architectures)
 RUN pip3 install --break-system-packages --no-cache-dir \
@@ -44,4 +46,5 @@ WORKDIR /home/moltbot/workspace
 EXPOSE 18789
 
 ENTRYPOINT ["/home/moltbot/entrypoint.sh"]
-CMD ["moltbot", "gateway", "run"]
+# Use clawdbot CLI until moltbot npm package ships the full runtime
+CMD ["clawdbot", "gateway", "run"]
