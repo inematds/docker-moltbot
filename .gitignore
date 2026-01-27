@@ -1,0 +1,18 @@
+# Secrets — NEVER commit
+.env
+.env.local
+.env.production
+
+# Local config (generated at runtime)
+config/moltbot.json
+config/clawdbot.json
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+
+# State
+.moltbot/
+.clawdbot/
