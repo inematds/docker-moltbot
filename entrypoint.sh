@@ -71,6 +71,11 @@ elif [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-
     cfg.auth = cfg.auth || {};
     cfg.auth.profiles = cfg.auth.profiles || {};
     cfg.auth.profiles['openrouter:default'] = { provider: 'openrouter', mode: 'token' };
+    cfg.agents = cfg.agents || {};
+    cfg.agents.defaults = cfg.agents.defaults || {};
+    if (!cfg.agents.defaults.model) {
+      cfg.agents.defaults.model = { model: 'anthropic/claude-sonnet-4' };
+    }
   "
   LLM_CONFIGURED=true
 elif [ -n "$OPENAI_API_KEY" ] && [ "$OPENAI_API_KEY" != "sk-your-key-here" ]; then
