@@ -1,8 +1,12 @@
 <p align="center">
-  <img src="assets/moltbot-banner.jpg" alt="Moltbot - AI Assistant" width="100%">
+  <img src="assets/moltbot-migration.jpg" alt="ClawdBot → MoltBot" width="100%">
 </p>
 
 # 🤖 Docker Moltbot
+
+<p align="center">
+  <img src="assets/moltbot-robot.jpg" alt="MoltBot" width="400">
+</p>
 
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
