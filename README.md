@@ -152,7 +152,18 @@ docker compose up -d
 
 > ⚠️ **Windows error `open //./pipe/dockerDesktopLinuxEngine`?** Docker Desktop is not running. Open it from the Start menu and wait until it shows "Docker is running", then retry.
 
-### Step 6: Check status
+### Step 6: Access the Webchat
+
+Open in your browser:
+```
+http://localhost:18789/chat
+```
+
+When prompted, enter your `GATEWAY_AUTH_TOKEN` from the `.env` file to authenticate.
+
+> 💡 **Tip:** You can also access directly with: `http://localhost:18789/?token=YOUR_TOKEN`
+
+### Step 7: Check status
 
 ```bash
 # Watch the logs (Ctrl+C to stop watching)
@@ -172,7 +183,7 @@ You should see output like:
 🤖 Starting Moltbot...
 ```
 
-### Step 7: Post-install setup
+### Step 8: Post-install setup
 
 After the container is running, use these commands to fine-tune your setup:
 
