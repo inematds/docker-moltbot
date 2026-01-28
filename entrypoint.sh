@@ -53,12 +53,47 @@ if [ -n "$TELEGRAM_BOT_TOKEN" ]; then
   "
 fi
 
-# Inject LLM API keys into environment (Moltbot reads these from env)
-# These are kept as env vars, not written to config files
-[ -n "$ANTHROPIC_API_KEY" ] && echo "🧠 Anthropic API key detected"
-[ -n "$OPENAI_API_KEY" ] && echo "🧠 OpenAI API key detected"
-[ -n "$OPENROUTER_API_KEY" ] && echo "🧠 OpenRouter API key detected"
-[ -n "$GOOGLE_API_KEY" ] && echo "🧠 Google API key detected"
+# Detect and configure LLM provider
+# Priority: Anthropic direct > OpenRouter > OpenAI > Google
+LLM_CONFIGURED=false
+
+if [ -n "$ANTHROPIC_API_KEY" ] && [ "$ANTHROPIC_API_KEY" != "sk-ant-your-key-here" ]; then
+  echo "🧠 Anthropic API key detected — using Anthropic direct"
+  inject_json "$CONFIG_FILE" "
+    cfg.auth = cfg.auth || {};
+    cfg.auth.profiles = cfg.auth.profiles || {};
+    cfg.auth.profiles['anthropic:default'] = { provider: 'anthropic', mode: 'token' };
+  "
+  LLM_CONFIGURED=true
+elif [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-here" ]; then
+  echo "🧠 OpenRouter API key detected — using OpenRouter"
+  inject_json "$CONFIG_FILE" "
+    cfg.auth = cfg.auth || {};
+    cfg.auth.profiles = cfg.auth.profiles || {};
+    cfg.auth.profiles['openrouter:default'] = { provider: 'openrouter', mode: 'token' };
+  "
+  LLM_CONFIGURED=true
+elif [ -n "$OPENAI_API_KEY" ] && [ "$OPENAI_API_KEY" != "sk-your-key-here" ]; then
+  echo "🧠 OpenAI API key detected — using OpenAI"
+  inject_json "$CONFIG_FILE" "
+    cfg.auth = cfg.auth || {};
+    cfg.auth.profiles = cfg.auth.profiles || {};
+    cfg.auth.profiles['openai:default'] = { provider: 'openai', mode: 'token' };
+  "
+  LLM_CONFIGURED=true
+elif [ -n "$GOOGLE_API_KEY" ] && [ "$GOOGLE_API_KEY" != "your-key-here" ]; then
+  echo "🧠 Google API key detected — using Google"
+  inject_json "$CONFIG_FILE" "
+    cfg.auth = cfg.auth || {};
+    cfg.auth.profiles = cfg.auth.profiles || {};
+    cfg.auth.profiles['google:default'] = { provider: 'google', mode: 'token' };
+  "
+  LLM_CONFIGURED=true
+fi
+
+if [ "$LLM_CONFIGURED" = "false" ]; then
+  echo "⚠️  No valid LLM API key found! Set at least one in .env"
+fi
 
 # Docker requires binding to 0.0.0.0 inside the container for port mapping to work.
 # The docker-compose.yml restricts external access to 127.0.0.1 on the host.
