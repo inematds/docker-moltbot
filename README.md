@@ -15,49 +15,49 @@
 [![Docs](https://img.shields.io/badge/Docs-docs.molt.bot-blue)](https://docs.molt.bot)
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/clawd)
 
-Docker setup for [Moltbot](https://molt.bot) — an AI personal assistant with security hardening out of the box.
+Setup Docker para o [Moltbot](https://molt.bot) — um assistente pessoal de IA com segurança reforçada de fábrica.
 
-> **Moltbot** (formerly Clawdbot) is an AI assistant that runs on your own machine. It connects to LLMs (Claude, GPT, Gemini, etc.), has tools (web search, code execution, file management, browser control), and talks to you via Telegram, WhatsApp, Discord, webchat, and more. This repo gives you a ready-to-run Docker setup with security best practices baked in.
+> **Moltbot** (antigo Clawdbot) é um assistente de IA que roda na sua própria máquina. Ele se conecta a LLMs (Claude, GPT, Gemini, etc.), tem ferramentas (busca na web, execução de código, gerenciamento de arquivos, controle de navegador) e conversa com você via Telegram, WhatsApp, Discord, webchat e mais. Este repo te dá um setup Docker pronto pra rodar com boas práticas de segurança já configuradas.
 
-> ⚠️ **Note (Jan 2026):** The Moltbot rebrand is in progress. The npm package `moltbot` is currently a compatibility shim. This Docker setup installs `clawdbot` (the full runtime) and will automatically switch to `moltbot` when the full package is published. No action needed from you — just rebuild when a new version is announced.
+> ⚠️ **Nota (Jan 2026):** O rebrand para Moltbot está em andamento. O pacote npm `moltbot` é atualmente um shim de compatibilidade. Este setup Docker instala o `clawdbot` (o runtime completo) e vai trocar automaticamente para `moltbot` quando o pacote completo for publicado. Não precisa fazer nada — é só rebuildar quando uma nova versão for anunciada.
 
 ---
 
-## ✨ Features
+## ✨ Funcionalidades
 
-- 🔒 **Security hardened** — follows the [Top 10 Security Checklist](SECURITY.md)
-- 🐳 **One command setup** — `docker compose up -d`
-- 🔐 **Secrets via env vars** — no plaintext credentials in config files
-- 👤 **Non-root container** — runs as unprivileged `moltbot` user
-- 📝 **Logging enabled** — audit trail by default
-- 📱 **Multi-channel** — Telegram, WhatsApp, Discord, Slack, webchat, and more
-- 🎙️ **Audio transcription** — Faster Whisper included (optional)
-- 🛠️ **Tool-capable** — shell access, web search, browser control, code execution
+- 🔒 **Segurança reforçada** — segue o [Checklist Top 10 de Segurança](SECURITY.md)
+- 🐳 **Setup em um comando** — `docker compose up -d`
+- 🔐 **Secrets via variáveis de ambiente** — sem credenciais em texto puro nos arquivos de config
+- 👤 **Container não-root** — roda como usuário sem privilégios `moltbot`
+- 📝 **Logging habilitado** — trilha de auditoria por padrão
+- 📱 **Multi-canal** — Telegram, WhatsApp, Discord, Slack, webchat e mais
+- 🎙️ **Transcrição de áudio** — Faster Whisper incluso (opcional)
+- 🛠️ **Ferramentas integradas** — acesso ao shell, busca na web, controle de navegador, execução de código
 - 🧠 **Multi-LLM** — Claude, GPT, Gemini, Llama, DeepSeek via OpenRouter
-- 🪟 **Windows compatible** — `.gitattributes` enforces LF endings, Dockerfile fixes CRLF
-- 🔄 **Auto-restart** — `unless-stopped` restart policy
-- 🌐 **Network secure** — gateway binds to loopback, Docker network isolation available
+- 🪟 **Compatível com Windows** — `.gitattributes` força terminações LF, Dockerfile corrige CRLF
+- 🔄 **Auto-restart** — política de reinício `unless-stopped`
+- 🌐 **Rede segura** — gateway vinculado ao loopback, isolamento de rede Docker disponível
 
 ---
 
-## 📋 Prerequisites
+## 📋 Pré-requisitos
 
-| Platform | Requirement | Install |
-|----------|------------|---------|
+| Plataforma | Requisito | Instalação |
+|------------|-----------|------------|
 | **Windows** | Docker Desktop | [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/) |
 | **Windows** | Git | [git-scm.com](https://git-scm.com/download/win) |
 | **Mac** | Docker Desktop | [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/) |
 | **Linux** | Docker Engine + Compose | `curl -fsSL https://get.docker.com \| sh` |
 
-> ⚠️ **Windows users:** Make sure **Docker Desktop is running** before proceeding. Check the system tray for the Docker icon (🐳). If WSL shows `docker-desktop Stopped`, open Docker Desktop from the Start menu and wait until it says "Docker is running".
+> ⚠️ **Usuários Windows:** Certifique-se de que o **Docker Desktop está rodando** antes de continuar. Verifique o ícone do Docker (🐳) na bandeja do sistema. Se o WSL mostrar `docker-desktop Stopped`, abra o Docker Desktop pelo menu Iniciar e espere até aparecer "Docker is running".
 
-> ⚠️ **Windows users:** If you've never used Docker before, you may need to enable **WSL 2** first. Docker Desktop will prompt you to install it — just follow the instructions and restart your computer when asked.
+> ⚠️ **Usuários Windows:** Se você nunca usou Docker antes, talvez precise habilitar o **WSL 2** primeiro. O Docker Desktop vai pedir para instalar — é só seguir as instruções e reiniciar o computador quando solicitado.
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Início Rápido
 
-### Step 1: Clone the repo
+### Passo 1: Clone o repo
 
 **Linux / Mac:**
 ```bash
@@ -77,7 +77,7 @@ git clone https://github.com/inematds/docker-moltbot.git
 cd docker-moltbot
 ```
 
-### Step 2: Configure environment
+### Passo 2: Configure o ambiente
 
 **Linux / Mac:**
 ```bash
@@ -97,23 +97,23 @@ Copy-Item .env.example .env
 notepad .env
 ```
 
-> ⚠️ **IMPORTANT:** You **MUST** create AND edit the `.env` file before running `docker compose up`. The container will not work with placeholder values.
+> ⚠️ **IMPORTANTE:** Você **PRECISA** criar E editar o arquivo `.env` antes de rodar `docker compose up`. O container não vai funcionar com os valores de exemplo.
 
-Open the `.env` file and replace the placeholder values with your real keys:
+Abra o arquivo `.env` e substitua os valores de exemplo pelas suas chaves reais:
 
 ```env
-# ❌ WRONG — these are placeholders, they won't work:
+# ❌ ERRADO — esses são placeholders, não vão funcionar:
 ANTHROPIC_API_KEY=sk-ant-your-key-here
 GATEWAY_AUTH_TOKEN=your-secure-token-here
 
-# ✅ RIGHT — your actual keys:
+# ✅ CERTO — suas chaves reais:
 ANTHROPIC_API_KEY=sk-ant-abc123-your-actual-real-key
 GATEWAY_AUTH_TOKEN=a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6
 ```
 
-### Step 3: Generate a secure gateway token
+### Passo 3: Gere um token seguro para o gateway
 
-The `GATEWAY_AUTH_TOKEN` protects your gateway API from unauthorized access. Generate a random one:
+O `GATEWAY_AUTH_TOKEN` protege a API do seu gateway contra acesso não autorizado. Gere um aleatório:
 
 **Linux / Mac:**
 ```bash
@@ -125,55 +125,55 @@ openssl rand -hex 24
 -join ((1..48) | ForEach-Object { '{0:x}' -f (Get-Random -Max 16) })
 ```
 
-**Or** just use any long random string (at least 24 characters). You can use a password manager to generate one.
+**Ou** use qualquer string aleatória longa (pelo menos 24 caracteres). Você pode usar um gerenciador de senhas para gerar uma.
 
-Copy the generated token into your `.env` file as `GATEWAY_AUTH_TOKEN`.
+Copie o token gerado para o seu arquivo `.env` como `GATEWAY_AUTH_TOKEN`.
 
-### Step 4: Choose your LLM provider
+### Passo 4: Escolha seu provedor de LLM
 
-You need **at least one** LLM provider API key. Here are your options:
+Você precisa de **pelo menos uma** chave de API de provedor de LLM. Aqui estão as opções:
 
-| Provider | Env Variable | Get Key | Notes |
-|----------|-------------|---------|-------|
-| Anthropic (Claude) | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com/) | Best for conversations and complex tasks |
-| OpenAI (GPT) | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com/api-keys) | Great for code generation |
-| OpenRouter (multi-model) | `OPENROUTER_API_KEY` | [openrouter.ai](https://openrouter.ai/) | Access to many models, **free tier available** |
-| Google (Gemini) | `GOOGLE_API_KEY` | [ai.google.dev](https://ai.google.dev/) | Good free tier |
+| Provedor | Variável de Ambiente | Obter Chave | Observações |
+|----------|---------------------|-------------|-------------|
+| Anthropic (Claude) | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com/) | Melhor para conversas e tarefas complexas |
+| OpenAI (GPT) | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com/api-keys) | Ótimo para geração de código |
+| OpenRouter (multi-modelo) | `OPENROUTER_API_KEY` | [openrouter.ai](https://openrouter.ai/) | Acesso a vários modelos, **tier gratuito disponível** |
+| Google (Gemini) | `GOOGLE_API_KEY` | [ai.google.dev](https://ai.google.dev/) | Bom tier gratuito |
 
-> 💡 **Tip:** OpenRouter gives access to multiple models (Claude, GPT, Llama, Gemini, DeepSeek) with a single API key — including **free models**. Great for getting started without spending money.
+> 💡 **Dica:** O OpenRouter dá acesso a múltiplos modelos (Claude, GPT, Llama, Gemini, DeepSeek) com uma única chave de API — incluindo **modelos gratuitos**. Ótimo pra começar sem gastar.
 
-### Step 5: Build and run
+### Passo 5: Build e execução
 
 ```bash
 docker compose up -d
 ```
 
-> 💡 **First run** takes a few minutes to build the image (downloads Node.js, FFmpeg, Python, etc). Subsequent runs start instantly.
+> 💡 **Primeira execução** leva alguns minutos para buildar a imagem (baixa Node.js, FFmpeg, Python, etc). As execuções seguintes iniciam instantaneamente.
 
-> ⚠️ **Windows error `open //./pipe/dockerDesktopLinuxEngine`?** Docker Desktop is not running. Open it from the Start menu and wait until it shows "Docker is running", then retry.
+> ⚠️ **Erro no Windows `open //./pipe/dockerDesktopLinuxEngine`?** O Docker Desktop não está rodando. Abra-o pelo menu Iniciar e espere até mostrar "Docker is running", depois tente novamente.
 
-### Step 6: Access the Webchat
+### Passo 6: Acesse o Webchat
 
-Open in your browser:
+Abra no seu navegador:
 ```
 http://localhost:18789/chat
 ```
 
-When prompted, enter your `GATEWAY_AUTH_TOKEN` from the `.env` file to authenticate.
+Quando solicitado, digite seu `GATEWAY_AUTH_TOKEN` do arquivo `.env` para autenticar.
 
-> 💡 **Tip:** You can also access directly with: `http://localhost:18789/?token=YOUR_TOKEN`
+> 💡 **Dica:** Você também pode acessar diretamente com: `http://localhost:18789/?token=SEU_TOKEN`
 
-### Step 7: Check status
+### Passo 7: Verifique o status
 
 ```bash
-# Watch the logs (Ctrl+C to stop watching)
+# Acompanhe os logs (Ctrl+C para parar)
 docker compose logs -f
 
-# Or check just the last 50 lines
+# Ou veja só as últimas 50 linhas
 docker compose logs --tail 50
 ```
 
-You should see output like:
+Você deve ver uma saída como:
 ```
 🤖 First run — creating config from template...
 🔑 Setting gateway auth token...
@@ -183,88 +183,88 @@ You should see output like:
 🤖 Starting Moltbot...
 ```
 
-### Step 8: Post-install setup
+### Passo 8: Configuração pós-instalação
 
-After the container is running, use these commands to fine-tune your setup:
+Depois que o container estiver rodando, use esses comandos para ajustar seu setup:
 
 ```bash
-# Run the interactive setup wizard (API keys, channels, preferences)
+# Execute o assistente de configuração interativo (chaves de API, canais, preferências)
 docker compose exec -it moltbot moltbot configure
 
-# Auto-detect and fix config issues
+# Auto-detecte e corrija problemas de config
 docker compose exec -it moltbot moltbot doctor --fix
 
-# Check overall health
+# Verifique a saúde geral
 docker compose exec moltbot moltbot status
 
-# Run a security audit
+# Execute uma auditoria de segurança
 docker compose exec moltbot moltbot security audit
 ```
 
-| Command | What it does |
-|---------|-------------|
-| `moltbot configure` | Interactive wizard — set up API keys, channels (Telegram, WhatsApp, etc.), model preferences |
-| `moltbot doctor --fix` | Auto-detect and fix config issues (e.g. Telegram configured but not enabled) |
-| `moltbot doctor` | Same check, but only **shows** issues without fixing |
-| `moltbot status` | Show gateway status, connected channels, model info |
-| `moltbot security audit` | Check your setup against security best practices |
+| Comando | O que faz |
+|---------|-----------|
+| `moltbot configure` | Assistente interativo — configure chaves de API, canais (Telegram, WhatsApp, etc.), preferências de modelo |
+| `moltbot doctor --fix` | Auto-detecta e corrige problemas de config (ex: Telegram configurado mas não habilitado) |
+| `moltbot doctor` | Mesma verificação, mas só **mostra** os problemas sem corrigir |
+| `moltbot status` | Mostra status do gateway, canais conectados, info do modelo |
+| `moltbot security audit` | Verifica seu setup contra boas práticas de segurança |
 
 ---
 
-## 📱 Telegram Setup
+## 📱 Configuração do Telegram
 
-Telegram is the easiest way to talk to your Moltbot from anywhere.
+O Telegram é a forma mais fácil de falar com seu Moltbot de qualquer lugar.
 
-### Step-by-step:
+### Passo a passo:
 
-1. **Create a bot** — Open Telegram and message [@BotFather](https://t.me/BotFather)
-2. **Send `/newbot`** — Follow the prompts to name your bot
-3. **Copy the token** — BotFather gives you a token like `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`
-4. **Add to `.env`:**
+1. **Crie um bot** — Abra o Telegram e mande mensagem pro [@BotFather](https://t.me/BotFather)
+2. **Envie `/newbot`** — Siga as instruções para nomear seu bot
+3. **Copie o token** — O BotFather te dá um token tipo `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`
+4. **Adicione ao `.env`:**
    ```env
    TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
    ```
-5. **Restart the container:**
+5. **Reinicie o container:**
    ```bash
    docker compose restart
    ```
-6. **Message your bot** on Telegram — it will give you a **pairing code**
-7. **Approve the pairing** inside the container:
+6. **Mande mensagem pro seu bot** no Telegram — ele vai te dar um **código de pareamento**
+7. **Aprove o pareamento** dentro do container:
    ```bash
    docker compose exec moltbot moltbot pairing approve telegram <code>
    ```
 
-> 💡 The pairing system ensures that only approved users can talk to your bot. This is a security feature — without approval, the bot won't respond to random strangers.
+> 💡 O sistema de pareamento garante que só usuários aprovados possam falar com seu bot. É uma funcionalidade de segurança — sem aprovação, o bot não responde a estranhos.
 
-### Optional: Configure BotFather settings
+### Opcional: Configure as opções do BotFather
 
-While in BotFather, you can also:
-- `/setdescription` — Add a description for your bot
-- `/setabouttext` — Add "About" text
-- `/setuserpic` — Set a profile picture
-- `/setcommands` — Define bot commands (optional)
+Ainda no BotFather, você também pode:
+- `/setdescription` — Adicionar uma descrição pro seu bot
+- `/setabouttext` — Adicionar texto "Sobre"
+- `/setuserpic` — Definir uma foto de perfil
+- `/setcommands` — Definir comandos do bot (opcional)
 
 ---
 
-## 📲 WhatsApp Setup
+## 📲 Configuração do WhatsApp
 
-You can connect Moltbot to WhatsApp via QR code pairing.
+Você pode conectar o Moltbot ao WhatsApp via pareamento por QR code.
 
-### Step-by-step:
+### Passo a passo:
 
-1. **Run the login command:**
+1. **Execute o comando de login:**
    ```bash
    docker compose exec -it moltbot moltbot channels login whatsapp
    ```
-2. **Scan the QR code** with your WhatsApp (Settings → Linked Devices → Link a Device)
-3. **Done!** Your Moltbot is now connected to WhatsApp
+2. **Escaneie o QR code** com seu WhatsApp (Configurações → Aparelhos Conectados → Conectar um Aparelho)
+3. **Pronto!** Seu Moltbot agora está conectado ao WhatsApp
 
-### ⚠️ Personal Number vs. Dedicated Number
+### ⚠️ Número Pessoal vs. Número Dedicado
 
-**Using your personal number:**
-- The bot will see messages from all your contacts
-- By default, DM policy is `pairing` — others may receive a pairing prompt
-- **Recommended:** Set `dmPolicy: allowlist` with only your number:
+**Usando seu número pessoal:**
+- O bot vai ver mensagens de todos os seus contatos
+- Por padrão, a política de DM é `pairing` — outros podem receber um prompt de pareamento
+- **Recomendado:** Defina `dmPolicy: allowlist` com apenas o seu número:
 
 ```json
 {
@@ -278,98 +278,98 @@ You can connect Moltbot to WhatsApp via QR code pairing.
 }
 ```
 
-**Using a dedicated number (recommended):**
-- Get a cheap prepaid SIM or Google Voice number
-- Install WhatsApp on a secondary phone or use WhatsApp Web
-- Cleaner separation between personal and bot messages
+**Usando um número dedicado (recomendado):**
+- Pegue um chip pré-pago barato ou um número do Google Voice
+- Instale o WhatsApp num celular secundário ou use o WhatsApp Web
+- Separação mais limpa entre mensagens pessoais e do bot
 
-> 💡 **Self-chat mode:** Talk to yourself on WhatsApp — messages to your own number go to Moltbot. No one else is affected.
+> 💡 **Modo self-chat:** Fale consigo mesmo no WhatsApp — mensagens para o seu próprio número vão pro Moltbot. Ninguém mais é afetado.
 
 ---
 
-## 🔒 Security
+## 🔒 Segurança
 
-This Docker setup implements **7 out of 10** security hardening measures automatically. See [SECURITY.md](SECURITY.md) for the full checklist.
+Este setup Docker implementa **7 de 10** medidas de hardening de segurança automaticamente. Veja o [SECURITY.md](SECURITY.md) para o checklist completo.
 
-### What Docker does automatically:
-| Protection | Status |
-|-----------|--------|
-| Gateway binds to `127.0.0.1` only (host side) | ✅ Automatic |
-| DM policy requires pairing approval | ✅ Automatic |
-| Config files are `chmod 600` | ✅ Automatic |
-| Container runs as non-root user | ✅ Automatic |
-| No privilege escalation (`no-new-privileges`) | ✅ Automatic |
-| Logging and diagnostics enabled | ✅ Automatic |
-| Secrets via environment variables | ✅ Automatic |
+### O que o Docker faz automaticamente:
+| Proteção | Status |
+|----------|--------|
+| Gateway vinculado apenas ao `127.0.0.1` (lado do host) | ✅ Automático |
+| Política de DM requer aprovação de pareamento | ✅ Automático |
+| Arquivos de config com `chmod 600` | ✅ Automático |
+| Container roda como usuário não-root | ✅ Automático |
+| Sem escalação de privilégios (`no-new-privileges`) | ✅ Automático |
+| Logging e diagnósticos habilitados | ✅ Automático |
+| Secrets via variáveis de ambiente | ✅ Automático |
 
-### What YOU should do:
-- [ ] Set up `AGENTS.md` to block dangerous commands (see [SECURITY.md](SECURITY.md))
-- [ ] Review MCP tool access and restrict to minimum needed
-- [ ] Consider `internal: true` network if you don't need internet (blocks API calls too)
+### O que VOCÊ deve fazer:
+- [ ] Configurar o `AGENTS.md` para bloquear comandos perigosos (veja [SECURITY.md](SECURITY.md))
+- [ ] Revisar o acesso a ferramentas MCP e restringir ao mínimo necessário
+- [ ] Considerar rede `internal: true` se não precisar de internet (bloqueia chamadas de API também)
 
-### Security audit:
+### Auditoria de segurança:
 ```bash
 docker compose exec moltbot moltbot security audit
 ```
 
-### Threat model (simplified)
+### Modelo de ameaças (simplificado)
 
-**What Moltbot can do:**
-- Execute shell commands on the container
-- Read/write files in the workspace
-- Make HTTP requests (API calls, web search)
-- Control a browser (if configured)
-- Send messages on connected channels
+**O que o Moltbot pode fazer:**
+- Executar comandos shell no container
+- Ler/escrever arquivos no workspace
+- Fazer requisições HTTP (chamadas de API, busca na web)
+- Controlar um navegador (se configurado)
+- Enviar mensagens nos canais conectados
 
-**What attackers might try:**
-- **Prompt injection:** Tricking the bot via crafted web content or messages
-- **Shell escape:** Getting the bot to run dangerous commands (`rm -rf /`, `curl | bash`)
-- **Token theft:** Stealing API keys from config or logs
-- **Unauthorized access:** Messaging the bot without approval
-- **Network exposure:** Accessing the gateway from outside localhost
+**O que atacantes podem tentar:**
+- **Injeção de prompt:** Enganar o bot via conteúdo web ou mensagens maliciosas
+- **Escape de shell:** Fazer o bot rodar comandos perigosos (`rm -rf /`, `curl | bash`)
+- **Roubo de token:** Roubar chaves de API dos configs ou logs
+- **Acesso não autorizado:** Mandar mensagem pro bot sem aprovação
+- **Exposição de rede:** Acessar o gateway de fora do localhost
 
-### Common vulnerabilities and mitigations:
+### Vulnerabilidades comuns e mitigações:
 
-| Vulnerability | Risk | Mitigation |
-|--------------|------|------------|
-| **Prompt injection** | Medium | Moltbot wraps untrusted content in safety tags; configure AGENTS.md to block dangerous patterns |
-| **Shell access** | Medium | Container isolation + non-root user; block `rm -rf`, `curl \| bash` in AGENTS.md |
-| **Session logs in plaintext** | Low | Logs are inside Docker volumes with restricted permissions; enable `redactSensitive` in config |
-| **Unverified plugins** | Low | Only install plugins from trusted sources; review MCP tool permissions |
-| **WhatsApp personal number** | Medium | Use `allowlist` dmPolicy or a dedicated number |
-| **Network exposure** | Low | Gateway binds to 127.0.0.1; use SSH tunnel or Tailscale for remote access |
-| **Browser control** | Medium | Browser runs sandboxed; restrict to trusted sites only |
+| Vulnerabilidade | Risco | Mitigação |
+|----------------|-------|-----------|
+| **Injeção de prompt** | Médio | Moltbot envolve conteúdo não-confiável em tags de segurança; configure o AGENTS.md para bloquear padrões perigosos |
+| **Acesso ao shell** | Médio | Isolamento do container + usuário não-root; bloqueie `rm -rf`, `curl \| bash` no AGENTS.md |
+| **Logs de sessão em texto puro** | Baixo | Logs ficam dentro de volumes Docker com permissões restritas; habilite `redactSensitive` na config |
+| **Plugins não verificados** | Baixo | Instale plugins apenas de fontes confiáveis; revise permissões de ferramentas MCP |
+| **WhatsApp com número pessoal** | Médio | Use dmPolicy `allowlist` ou um número dedicado |
+| **Exposição de rede** | Baixo | Gateway vinculado a 127.0.0.1; use túnel SSH ou Tailscale para acesso remoto |
+| **Controle de navegador** | Médio | Navegador roda em sandbox; restrinja apenas a sites confiáveis |
 
 ---
 
 ## 📦 Volumes
 
-Docker volumes persist your data across container restarts and rebuilds.
+Volumes Docker persistem seus dados entre reinícios e rebuilds do container.
 
-| Volume | Container Path | Purpose |
-|--------|---------------|---------|
-| `moltbot-data` | `/home/moltbot/.moltbot` | Config, session data, auth tokens, pairing info |
-| `moltbot-workspace` | `/home/moltbot/workspace` | Agent workspace — AGENTS.md, memory files, project files |
-| `moltbot-logs` | `/home/moltbot/logs` | Log files (NOT in /tmp — survives restarts) |
+| Volume | Caminho no Container | Finalidade |
+|--------|---------------------|------------|
+| `moltbot-data` | `/home/moltbot/.moltbot` | Config, dados de sessão, tokens de auth, info de pareamento |
+| `moltbot-workspace` | `/home/moltbot/workspace` | Workspace do agente — AGENTS.md, arquivos de memória, arquivos de projeto |
+| `moltbot-logs` | `/home/moltbot/logs` | Arquivos de log (NÃO em /tmp — sobrevive a reinícios) |
 
-### Backup your data:
+### Faça backup dos seus dados:
 ```bash
-# Backup all volumes
+# Backup de todos os volumes
 docker run --rm -v moltbot-data:/data -v $(pwd):/backup alpine tar czf /backup/moltbot-data.tar.gz -C /data .
 docker run --rm -v moltbot-workspace:/data -v $(pwd):/backup alpine tar czf /backup/moltbot-workspace.tar.gz -C /data .
 ```
 
-### Reset everything:
+### Resetar tudo:
 ```bash
-docker compose down -v  # ⚠️ Deletes ALL data including config and workspace
+docker compose down -v  # ⚠️ Apaga TODOS os dados incluindo config e workspace
 ```
 
 ---
 
-## 🛠️ Useful Commands
+## 🛠️ Comandos Úteis
 
 ```bash
-# === Lifecycle ===
+# === Ciclo de vida ===
 docker compose up -d              # Start in background
 docker compose down               # Stop and remove container
 docker compose restart            # Restart
@@ -379,7 +379,7 @@ docker compose stop               # Stop without removing
 docker compose logs -f            # Follow logs (Ctrl+C to stop)
 docker compose logs --tail 100    # Last 100 lines
 
-# === Shell access ===
+# === Acesso ao shell ===
 docker compose exec moltbot bash  # Open shell inside container
 
 # === Moltbot CLI ===
@@ -388,128 +388,128 @@ docker compose exec moltbot moltbot configure       # Interactive setup
 docker compose exec moltbot moltbot doctor --fix    # Auto-fix issues
 docker compose exec moltbot moltbot security audit  # Security check
 
-# === Update Moltbot ===
+# === Atualizar Moltbot ===
 docker compose build --no-cache   # Rebuild image (pulls latest moltbot)
 docker compose up -d              # Restart with new image
 
-# === Cleanup ===
+# === Limpeza ===
 docker system prune -a            # Remove unused images (reclaim disk space)
 ```
 
 ---
 
-## 🌐 Network Isolation
+## 🌐 Isolamento de Rede
 
-By default, the container has internet access — this is **required** for API calls to Anthropic, OpenAI, etc.
+Por padrão, o container tem acesso à internet — isso é **necessário** para chamadas de API à Anthropic, OpenAI, etc.
 
-### Full isolation (no internet):
+### Isolamento total (sem internet):
 ```yaml
-# In docker-compose.yml, change:
+# No docker-compose.yml, altere:
 networks:
   moltbot-net:
     internal: true  # No internet access
 ```
 
-> ⚠️ **Warning:** This blocks ALL outgoing connections, including API calls to LLM providers. Only use if you have a **local model setup** (e.g., Ollama running on the same network).
+> ⚠️ **Atenção:** Isso bloqueia TODAS as conexões de saída, incluindo chamadas de API para provedores de LLM. Use apenas se você tiver um **setup de modelo local** (ex: Ollama rodando na mesma rede).
 
-### Partial isolation (allow specific hosts only):
-For advanced users, use Docker network policies or iptables rules to allow only specific API endpoints.
-
----
-
-## 📡 Access Channels
-
-Moltbot supports multiple communication channels simultaneously. All channels share the same agent, memory, and workspace.
-
-| Channel | Type | Access | Setup Difficulty | Best For |
-|---------|------|--------|-----------------|----------|
-| 📱 **Telegram** | Messaging | Anywhere (mobile/desktop) | ⭐ Easy | Daily use, quick access |
-| 📲 **WhatsApp** | Messaging | Anywhere (mobile/desktop) | ⭐ Easy | If you already use WhatsApp |
-| 💬 **Webchat** | Web UI | Local network / VPN | ⭐ Easy | Rich UI, file uploads |
-| 🌐 **Webchat (public)** | Web UI | Anywhere | ⭐⭐⭐ Advanced | Public-facing bot |
-| 🔒 **Tailscale** | VPN | Anywhere (zero-trust) | ⭐⭐ Medium | Most secure remote access |
-| 💜 **Discord** | Messaging | Anywhere | ⭐⭐ Medium | Teams, communities |
-| 💼 **Slack** | Messaging | Anywhere | ⭐⭐ Medium | Work/enterprise |
-| 🔵 **Signal** | Messaging | Anywhere | ⭐⭐⭐ Advanced | Maximum privacy |
-| 🟢 **Matrix** | Messaging | Anywhere | ⭐⭐⭐ Advanced | Self-hosted, federated |
-
-### Which should I use?
-
-- **Simplest setup:** Telegram — one bot token and you're done
-- **Most private:** Signal or Tailscale + Webchat
-- **Access from anywhere without extra apps:** Telegram + WhatsApp (you already have them)
-- **Best for teams/work:** Slack or Discord
-- **Most secure remote webchat:** Tailscale — zero-trust VPN, no open ports
-
-### Multi-channel
-
-You can enable **multiple channels simultaneously**. All channels share the same agent, memory, and workspace. Messages from any channel arrive in the same assistant.
-
-> ⚠️ **Cross-channel messaging is restricted** by design — the bot won't leak conversation data between channels.
+### Isolamento parcial (permitir apenas hosts específicos):
+Para usuários avançados, use políticas de rede Docker ou regras iptables para permitir apenas endpoints de API específicos.
 
 ---
 
-## 🖥️ Webchat Access (Remote)
+## 📡 Canais de Acesso
 
-The gateway binds to `127.0.0.1` (loopback only). To access the webchat from another machine, use an **SSH tunnel**:
+O Moltbot suporta múltiplos canais de comunicação simultaneamente. Todos os canais compartilham o mesmo agente, memória e workspace.
+
+| Canal | Tipo | Acesso | Dificuldade de Setup | Melhor Para |
+|-------|------|--------|---------------------|-------------|
+| 📱 **Telegram** | Mensagens | Qualquer lugar (mobile/desktop) | ⭐ Fácil | Uso diário, acesso rápido |
+| 📲 **WhatsApp** | Mensagens | Qualquer lugar (mobile/desktop) | ⭐ Fácil | Se você já usa WhatsApp |
+| 💬 **Webchat** | Interface Web | Rede local / VPN | ⭐ Fácil | Interface rica, upload de arquivos |
+| 🌐 **Webchat (público)** | Interface Web | Qualquer lugar | ⭐⭐⭐ Avançado | Bot público |
+| 🔒 **Tailscale** | VPN | Qualquer lugar (zero-trust) | ⭐⭐ Médio | Acesso remoto mais seguro |
+| 💜 **Discord** | Mensagens | Qualquer lugar | ⭐⭐ Médio | Times, comunidades |
+| 💼 **Slack** | Mensagens | Qualquer lugar | ⭐⭐ Médio | Trabalho/empresarial |
+| 🔵 **Signal** | Mensagens | Qualquer lugar | ⭐⭐⭐ Avançado | Privacidade máxima |
+| 🟢 **Matrix** | Mensagens | Qualquer lugar | ⭐⭐⭐ Avançado | Self-hosted, federado |
+
+### Qual devo usar?
+
+- **Setup mais simples:** Telegram — um token de bot e pronto
+- **Mais privado:** Signal ou Tailscale + Webchat
+- **Acesso de qualquer lugar sem apps extras:** Telegram + WhatsApp (você já tem)
+- **Melhor para times/trabalho:** Slack ou Discord
+- **Webchat remoto mais seguro:** Tailscale — VPN zero-trust, sem portas abertas
+
+### Multi-canal
+
+Você pode habilitar **múltiplos canais simultaneamente**. Todos os canais compartilham o mesmo agente, memória e workspace. Mensagens de qualquer canal chegam no mesmo assistente.
+
+> ⚠️ **Mensagens entre canais são restritas** por design — o bot não vai vazar dados de conversa entre canais.
+
+---
+
+## 🖥️ Acesso ao Webchat (Remoto)
+
+O gateway é vinculado ao `127.0.0.1` (apenas loopback). Para acessar o webchat de outra máquina, use um **túnel SSH**:
 
 ```bash
-# On your local machine (the one with the browser):
+# Na sua máquina local (a que tem o navegador):
 ssh -L 18789:localhost:18789 user@your-server-ip
 
-# Then open in your browser:
+# Depois abra no navegador:
 # http://127.0.0.1:18789/chat
 ```
 
-This is the safest way to access the web interface remotely — no ports exposed, all traffic encrypted via SSH.
+Esta é a forma mais segura de acessar a interface web remotamente — sem portas expostas, todo tráfego criptografado via SSH.
 
-### Alternative: Tailscale (recommended for regular use)
+### Alternativa: Tailscale (recomendado para uso frequente)
 
-If you access webchat frequently, set up [Tailscale](https://tailscale.com) for seamless VPN access:
+Se você acessa o webchat com frequência, configure o [Tailscale](https://tailscale.com) para acesso VPN transparente:
 
 ```bash
-# On your server:
+# No seu servidor:
 curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up
 
-# On your devices:
-# Install Tailscale app, log in with same account
-# Access webchat via: http://<tailscale-ip>:18789/chat
+# Nos seus dispositivos:
+# Instale o app Tailscale, faça login com a mesma conta
+# Acesse o webchat via: http://<tailscale-ip>:18789/chat
 ```
 
 ---
 
-## 🧰 Recommended Tools & Skills
+## 🧰 Ferramentas e Skills Recomendados
 
-Enhance your Moltbot with these additional tools:
+Turbine seu Moltbot com estas ferramentas adicionais:
 
-### 🛠 CLI Tools
+### 🛠 Ferramentas CLI
 
-| Tool | Install | Purpose |
-|------|---------|---------|
-| [Codex CLI](https://github.com/openai/codex) | `npm i -g @openai/codex` | AI coding agent (OpenAI) |
-| [agent-browser](https://github.com/vercel-labs/agent-browser) | `npm i -g agent-browser` | Headless browser automation |
-| FFmpeg | Pre-installed in Docker image | Audio/video processing |
-| Faster Whisper | Pre-installed in Docker image | Local audio transcription |
+| Ferramenta | Instalação | Finalidade |
+|------------|------------|------------|
+| [Codex CLI](https://github.com/openai/codex) | `npm i -g @openai/codex` | Agente de código com IA (OpenAI) |
+| [agent-browser](https://github.com/vercel-labs/agent-browser) | `npm i -g agent-browser` | Automação de navegador headless |
+| FFmpeg | Pré-instalado na imagem Docker | Processamento de áudio/vídeo |
+| Faster Whisper | Pré-instalado na imagem Docker | Transcrição local de áudio |
 
-### 🎨 API Services
+### 🎨 Serviços de API
 
-| Service | Purpose | Pricing |
-|---------|---------|---------|
-| [OpenRouter](https://openrouter.ai) | Gateway to multiple LLMs (free models available) | Free tier + pay-per-use |
-| [Kie.ai](https://kie.ai) | Image, video & music generation (Veo 3.1, Flux, Suno) | Credits |
-| [ElevenLabs](https://elevenlabs.io) | Text-to-speech (realistic voices) | Free tier + paid |
-| [Gamma](https://gamma.app) | AI presentations & documents | Free tier + paid |
-| [HeyGen](https://heygen.com) | AI video avatars | Credits |
+| Serviço | Finalidade | Preço |
+|---------|------------|-------|
+| [OpenRouter](https://openrouter.ai) | Gateway para múltiplos LLMs (modelos gratuitos disponíveis) | Tier gratuito + pay-per-use |
+| [Kie.ai](https://kie.ai) | Geração de imagem, vídeo e música (Veo 3.1, Flux, Suno) | Créditos |
+| [ElevenLabs](https://elevenlabs.io) | Text-to-speech (vozes realistas) | Tier gratuito + pago |
+| [Gamma](https://gamma.app) | Apresentações e documentos com IA | Tier gratuito + pago |
+| [HeyGen](https://heygen.com) | Avatares de vídeo com IA | Créditos |
 
-### 📚 Skills (for Codex / Claude Code)
+### 📚 Skills (para Codex / Claude Code)
 
-| Skill | Install | Purpose |
-|-------|---------|---------|
-| [Remotion Skills](https://github.com/inematds/remotion-skills) | Copy to `.codex/skills/` | Create videos programmatically with React |
+| Skill | Instalação | Finalidade |
+|-------|------------|------------|
+| [Remotion Skills](https://github.com/inematds/remotion-skills) | Copiar para `.codex/skills/` | Criar vídeos programaticamente com React |
 
 ```bash
-# Install Remotion Skills for Codex
+# Instalar Remotion Skills para Codex
 docker compose exec moltbot bash -c '
   git clone https://github.com/inematds/remotion-skills.git /tmp/remotion-skills
   mkdir -p .codex/skills
@@ -519,181 +519,181 @@ docker compose exec moltbot bash -c '
 
 ---
 
-## 🧠 LLM Organization
+## 🧠 Organização de LLMs
 
-Recommended model strategy for different tasks:
+Estratégia recomendada de modelos para diferentes tarefas:
 
-| Model | Provider | Use Case | Cost |
-|-------|----------|----------|------|
-| Claude Opus 4.5 | Anthropic | Main assistant — conversations, complex tasks | Paid (API or Max plan) |
-| gpt-5.2-codex | OpenAI | Code generation (priority) | Paid (Team plan) |
-| Gemini 2.0 Flash | Google | Fast tasks, simple queries | Free tier available |
-| Free models | OpenRouter | Sub-agents, secondary tasks | Free |
+| Modelo | Provedor | Caso de Uso | Custo |
+|--------|----------|-------------|-------|
+| Claude Opus 4.5 | Anthropic | Assistente principal — conversas, tarefas complexas | Pago (API ou plano Max) |
+| gpt-5.2-codex | OpenAI | Geração de código (prioridade) | Pago (plano Team) |
+| Gemini 2.0 Flash | Google | Tarefas rápidas, consultas simples | Tier gratuito disponível |
+| Modelos gratuitos | OpenRouter | Sub-agentes, tarefas secundárias | Gratuito |
 
-**Free models on OpenRouter:** DeepSeek R1, Llama 3.1 405B, Llama 3.3 70B, Gemini 2.0 Flash, Qwen3 Coder
+**Modelos gratuitos no OpenRouter:** DeepSeek R1, Llama 3.1 405B, Llama 3.3 70B, Gemini 2.0 Flash, Qwen3 Coder
 
-> 💡 Configure model preferences with `docker compose exec -it moltbot moltbot configure`
+> 💡 Configure preferências de modelo com `docker compose exec -it moltbot moltbot configure`
 
 ---
 
-## 💻 Requirements
+## 💻 Requisitos
 
-| Resource | Minimum | Recommended |
-|----------|---------|-------------|
-| **RAM** | 2 GB | 4 GB (with Whisper) |
-| **Disk** | 5 GB | 10+ GB |
+| Recurso | Mínimo | Recomendado |
+|---------|--------|-------------|
+| **RAM** | 2 GB | 4 GB (com Whisper) |
+| **Disco** | 5 GB | 10+ GB |
 | **CPU** | 1 core | 2+ cores |
-| **Docker** | Engine 24+ / Compose v2+ | Latest stable |
-| **OS** | Linux, macOS, Windows 10+ | Ubuntu 22.04+ / macOS 13+ |
-| **Network** | Internet access | Stable broadband |
+| **Docker** | Engine 24+ / Compose v2+ | Última versão estável |
+| **SO** | Linux, macOS, Windows 10+ | Ubuntu 22.04+ / macOS 13+ |
+| **Rede** | Acesso à internet | Banda larga estável |
 
 ---
 
-## 🔧 Troubleshooting
+## 🔧 Solução de Problemas
 
-### Windows Issues
+### Problemas no Windows
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `open //./pipe/dockerDesktopLinuxEngine: O sistema não pode encontrar o arquivo` | Docker Desktop not running | Open Docker Desktop from Start menu, wait for "Docker is running" |
-| `.env not found` | Missing config file | Run `copy .env.example .env` then `notepad .env` |
-| `the attribute version is obsolete` | Old docker-compose format | Harmless warning — ignore it (this repo doesn't use `version:`) |
-| `WSL docker-desktop Stopped` | WSL not started | Open Docker Desktop — it starts WSL automatically |
-| Build hangs or fails | Not enough RAM | Docker Desktop → Settings → Resources → increase to 4GB+ |
-| `exec entrypoint.sh: no such file or directory` | Windows CRLF line endings | Re-clone the repo: `git config --global core.autocrlf input` then `git clone` again |
-| `npm ERR! Error while executing` | Network/proxy issues | Check your internet connection; if behind a proxy, configure Docker proxy settings |
+| Erro | Causa | Solução |
+|------|-------|---------|
+| `open //./pipe/dockerDesktopLinuxEngine: O sistema não pode encontrar o arquivo` | Docker Desktop não está rodando | Abra o Docker Desktop pelo menu Iniciar, espere por "Docker is running" |
+| `.env not found` | Arquivo de config faltando | Execute `copy .env.example .env` e depois `notepad .env` |
+| `the attribute version is obsolete` | Formato antigo do docker-compose | Aviso inofensivo — ignore (este repo não usa `version:`) |
+| `WSL docker-desktop Stopped` | WSL não iniciou | Abra o Docker Desktop — ele inicia o WSL automaticamente |
+| Build trava ou falha | RAM insuficiente | Docker Desktop → Settings → Resources → aumente para 4GB+ |
+| `exec entrypoint.sh: no such file or directory` | Terminações de linha CRLF do Windows | Clone o repo novamente: `git config --global core.autocrlf input` e depois `git clone` |
+| `npm ERR! Error while executing` | Problemas de rede/proxy | Verifique sua conexão com a internet; se estiver atrás de proxy, configure as opções de proxy do Docker |
 
-### Linux / Mac Issues
+### Problemas no Linux / Mac
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `permission denied` | Not in docker group | `sudo usermod -aG docker $USER` then **log out and back in** |
-| `port already in use` | Another service on 18789 | Change port in `docker-compose.yml` or stop the other service |
-| `no space left on device` | Disk full | `docker system prune -a` to clean old images |
-| Build fails on ARM Mac | Architecture mismatch | Usually works fine; if issues, try `docker compose build --platform linux/amd64` |
+| Erro | Causa | Solução |
+|------|-------|---------|
+| `permission denied` | Não está no grupo docker | `sudo usermod -aG docker $USER` e depois **faça logout e login novamente** |
+| `port already in use` | Outro serviço na porta 18789 | Mude a porta no `docker-compose.yml` ou pare o outro serviço |
+| `no space left on device` | Disco cheio | `docker system prune -a` para limpar imagens antigas |
+| Build falha em Mac ARM | Incompatibilidade de arquitetura | Geralmente funciona; se tiver problemas, tente `docker compose build --platform linux/amd64` |
 
-### Docker / Container Issues
+### Problemas do Docker / Container
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `exec entrypoint.sh: no such file or directory` | CRLF line endings in entrypoint.sh | **Auto-fixed** by Dockerfile (`sed -i 's/\r$//'`). If it still happens: open `entrypoint.sh` in VS Code → change CRLF to LF (bottom-right corner) → save → rebuild |
-| `error: unknown option '--foreground'` | Old command syntax | CMD should be `["moltbot", "gateway", "run"]` — update your Dockerfile |
-| `npm error: spawn git ENOENT` | Git not in Docker image | Git is included in this Dockerfile. If using a custom image, add `git` to `apt-get install` |
-| Container keeps restarting | Various — check logs | `docker compose logs --tail 50` and look for the error |
-| Gateway binds to 127.0.0.1 inside container | Default bind is loopback | **Auto-fixed** by entrypoint.sh (sets `bind: "lan"`). Docker needs 0.0.0.0 inside, but `docker-compose.yml` restricts host access to 127.0.0.1 |
-| Logs in /tmp disappear | tmpfs wipes on restart | Logs are stored in `/home/moltbot/logs` volume (NOT /tmp). This is correct by default. |
+| Erro | Causa | Solução |
+|------|-------|---------|
+| `exec entrypoint.sh: no such file or directory` | Terminações de linha CRLF no entrypoint.sh | **Corrigido automaticamente** pelo Dockerfile (`sed -i 's/\r$//'`). Se ainda acontecer: abra o `entrypoint.sh` no VS Code → mude CRLF para LF (canto inferior direito) → salve → rebuild |
+| `error: unknown option '--foreground'` | Sintaxe de comando antiga | O CMD deve ser `["moltbot", "gateway", "run"]` — atualize seu Dockerfile |
+| `npm error: spawn git ENOENT` | Git não está na imagem Docker | Git está incluído neste Dockerfile. Se estiver usando uma imagem customizada, adicione `git` no `apt-get install` |
+| Container fica reiniciando | Vários — verifique os logs | `docker compose logs --tail 50` e procure o erro |
+| Gateway vincula a 127.0.0.1 dentro do container | Bind padrão é loopback | **Corrigido automaticamente** pelo entrypoint.sh (define `bind: "lan"`). Docker precisa de 0.0.0.0 dentro, mas o `docker-compose.yml` restringe acesso do host a 127.0.0.1 |
+| Logs em /tmp desaparecem | tmpfs limpa ao reiniciar | Logs são armazenados no volume `/home/moltbot/logs` (NÃO em /tmp). Isso já é o padrão. |
 
-### General Issues
+### Problemas Gerais
 
-| Problem | Fix |
-|---------|-----|
-| Bot not responding to messages | Check logs: `docker compose logs -f`. Verify API keys and bot token are correct. |
-| API errors / rate limiting | Verify API keys in `.env` are correct and have credits |
-| Can't access webchat remotely | Use SSH tunnel: `ssh -L 18789:localhost:18789 user@server` |
-| Bot responds slowly | Check your internet connection; consider a faster LLM model |
-| "Pairing required" message | This is expected — approve with `moltbot pairing approve <channel> <code>` |
-| Config changes not applied | Restart: `docker compose restart` |
+| Problema | Solução |
+|----------|---------|
+| Bot não responde mensagens | Verifique os logs: `docker compose logs -f`. Confirme que as chaves de API e token do bot estão corretos. |
+| Erros de API / rate limiting | Verifique se as chaves de API no `.env` estão corretas e têm créditos |
+| Não consegue acessar o webchat remotamente | Use túnel SSH: `ssh -L 18789:localhost:18789 user@server` |
+| Bot responde devagar | Verifique sua conexão com a internet; considere um modelo de LLM mais rápido |
+| Mensagem "Pairing required" | Isso é esperado — aprove com `moltbot pairing approve <channel> <code>` |
+| Mudanças de config não aplicadas | Reinicie: `docker compose restart` |
 
 ---
 
-## 🔄 Migration from Clawdbot
+## 🔄 Migração do Clawdbot
 
-If you're upgrading from the old `docker-clawdbot` setup, here's what changed:
+Se você está atualizando do setup antigo `docker-clawdbot`, aqui está o que mudou:
 
-### What's different:
+### O que é diferente:
 
-| Old (Clawdbot) | New (Moltbot) |
-|----------------|---------------|
-| Package: `clawdbot` (npm) | Package: `moltbot` (npm) |
+| Antigo (Clawdbot) | Novo (Moltbot) |
+|-------------------|----------------|
+| Pacote: `clawdbot` (npm) | Pacote: `moltbot` (npm) |
 | CLI: `clawdbot` | CLI: `moltbot` |
-| Command: `clawdbot gateway start --foreground` | Command: `moltbot gateway run` |
+| Comando: `clawdbot gateway start --foreground` | Comando: `moltbot gateway run` |
 | Repo: `inematds/docker-clawdbot` | Repo: `inematds/docker-moltbot` |
-| Docs: `docs.clawd.bot` | Docs: `docs.molt.bot` (redirects work) |
-| Config dir: `~/.clawdbot` | Config dir: `~/.moltbot` (with fallback to `~/.clawdbot`) |
-| User: `clawdbot` | User: `moltbot` |
+| Docs: `docs.clawd.bot` | Docs: `docs.molt.bot` (redirects funcionam) |
+| Dir de config: `~/.clawdbot` | Dir de config: `~/.moltbot` (com fallback para `~/.clawdbot`) |
+| Usuário: `clawdbot` | Usuário: `moltbot` |
 | Container: `clawdbot` | Container: `moltbot` |
 
-### Migration steps:
+### Passos da migração:
 
-1. **Backup your data:**
+1. **Faça backup dos seus dados:**
    ```bash
-   # From old setup
+   # Do setup antigo
    cd docker-clawdbot
    docker run --rm -v clawdbot-data:/data -v $(pwd):/backup alpine tar czf /backup/clawdbot-data-backup.tar.gz -C /data .
    docker run --rm -v clawdbot-workspace:/data -v $(pwd):/backup alpine tar czf /backup/clawdbot-workspace-backup.tar.gz -C /data .
    ```
 
-2. **Stop old container:**
+2. **Pare o container antigo:**
    ```bash
    cd docker-clawdbot
    docker compose down
    ```
 
-3. **Clone new repo:**
+3. **Clone o novo repo:**
    ```bash
    git clone https://github.com/inematds/docker-moltbot.git
    cd docker-moltbot
    ```
 
-4. **Copy your .env:**
+4. **Copie seu .env:**
    ```bash
    cp ../docker-clawdbot/.env .env
    ```
 
-5. **Start new container:**
+5. **Inicie o novo container:**
    ```bash
    docker compose up -d
    ```
 
-6. **Restore data (optional):**
+6. **Restaure os dados (opcional):**
    ```bash
-   # Restore workspace
+   # Restaurar workspace
    docker run --rm -v moltbot-workspace:/data -v $(pwd):/backup alpine tar xzf /backup/clawdbot-workspace-backup.tar.gz -C /data
    ```
 
-### Compatibility notes:
-- The old `clawdbot` npm package is now a **shim** that redirects to `moltbot`
-- Your existing config files are compatible — Moltbot falls back to `~/.clawdbot` if `~/.moltbot` doesn't exist
-- Telegram bot tokens, pairing approvals, and API keys carry over unchanged
-- You may need to **re-pair** on some channels after migration
+### Notas de compatibilidade:
+- O pacote npm antigo `clawdbot` agora é um **shim** que redireciona para `moltbot`
+- Seus arquivos de config existentes são compatíveis — o Moltbot faz fallback para `~/.clawdbot` se `~/.moltbot` não existir
+- Tokens de bot do Telegram, aprovações de pareamento e chaves de API são mantidos sem alteração
+- Pode ser necessário **re-parear** em alguns canais após a migração
 
-### Known issues fixed in this version:
-- ✅ `git` package included in Dockerfile (was missing → npm install failed)
-- ✅ CRLF line endings auto-fixed by Dockerfile + `.gitattributes` (was causing "no such file" on Windows)
-- ✅ Gateway binds to `lan` inside container (was binding to 127.0.0.1 → unreachable from host)
-- ✅ Correct command: `moltbot gateway run` (was `clawdbot gateway start --foreground`)
-- ✅ Logs in `/home/moltbot/logs` volume (was in /tmp → lost on restart)
-- ✅ `.dockerignore` and `.gitignore` included
-
----
-
-## 🤝 Contributing
-
-PRs welcome! Please follow the security checklist in [SECURITY.md](SECURITY.md).
-
-1. Fork the repo
-2. Create a feature branch: `git checkout -b my-feature`
-3. Commit your changes: `git commit -m 'Add my feature'`
-4. Push: `git push origin my-feature`
-5. Open a Pull Request
-
-### Guidelines:
-- Keep security best practices in mind
-- Test on both Linux and Windows if possible
-- Update documentation for any user-facing changes
-- Follow existing code style
+### Problemas conhecidos corrigidos nesta versão:
+- ✅ Pacote `git` incluído no Dockerfile (estava faltando → npm install falhava)
+- ✅ Terminações de linha CRLF corrigidas automaticamente pelo Dockerfile + `.gitattributes` (causava "no such file" no Windows)
+- ✅ Gateway vincula a `lan` dentro do container (estava vinculando a 127.0.0.1 → inacessível do host)
+- ✅ Comando correto: `moltbot gateway run` (era `clawdbot gateway start --foreground`)
+- ✅ Logs em volume `/home/moltbot/logs` (estava em /tmp → perdido ao reiniciar)
+- ✅ `.dockerignore` e `.gitignore` incluídos
 
 ---
 
-## 📜 License
+## 🤝 Contribuindo
 
-[MIT](LICENSE) — use it however you want.
+PRs são bem-vindos! Siga o checklist de segurança em [SECURITY.md](SECURITY.md).
+
+1. Faça fork do repo
+2. Crie uma branch de feature: `git checkout -b my-feature`
+3. Faça commit das suas mudanças: `git commit -m 'Add my feature'`
+4. Faça push: `git push origin my-feature`
+5. Abra um Pull Request
+
+### Diretrizes:
+- Mantenha as boas práticas de segurança em mente
+- Teste no Linux e Windows se possível
+- Atualize a documentação para qualquer mudança voltada ao usuário
+- Siga o estilo de código existente
+
+---
+
+## 📜 Licença
+
+[MIT](LICENSE) — use como quiser.
 
 ---
 
 <p align="center">
   <a href="https://molt.bot">molt.bot</a> •
-  <a href="https://docs.molt.bot">Documentation</a> •
+  <a href="https://docs.molt.bot">Documentação</a> •
   <a href="https://discord.gg/clawd">Discord</a> •
   <a href="https://github.com/moltbot/moltbot">GitHub</a>
 </p>
