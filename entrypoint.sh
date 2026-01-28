@@ -71,6 +71,10 @@ elif [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-
     cfg.auth = cfg.auth || {};
     cfg.auth.profiles = cfg.auth.profiles || {};
     cfg.auth.profiles['openrouter:default'] = { provider: 'openrouter', mode: 'token' };
+    cfg.auth.order = cfg.auth.order || {};
+    cfg.auth.order['anthropic'] = ['openrouter:default'];
+    cfg.auth.order['openai'] = ['openrouter:default'];
+    cfg.auth.order['google'] = ['openrouter:default'];
     cfg.agents = cfg.agents || {};
     cfg.agents.defaults = cfg.agents.defaults || {};
     if (!cfg.agents.defaults.model) {
