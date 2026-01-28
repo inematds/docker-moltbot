@@ -80,4 +80,11 @@ inject_json "$CONFIG_FILE" "
 chmod 600 "$CONFIG_FILE" 2>/dev/null || true
 
 echo "🤖 Starting Moltbot..."
+echo ""
+echo "╔══════════════════════════════════════════════════════════╗"
+echo "║  🌐 Webchat: http://localhost:18789/chat                ║"
+echo "║  🔑 Token: use your GATEWAY_AUTH_TOKEN from .env        ║"
+echo "║  📋 Status: docker exec moltbot clawdbot status        ║"
+echo "╚══════════════════════════════════════════════════════════╝"
+echo ""
 exec "$@"
