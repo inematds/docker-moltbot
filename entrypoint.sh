@@ -68,11 +68,10 @@ inject_json "$CONFIG_FILE" "
   cfg.gateway.bind = 'lan';
 "
 
-# Enable logging
-echo "📝 Enabling logging..."
+# Configure logging
+echo "📝 Configuring logging..."
 inject_json "$CONFIG_FILE" "
   cfg.logging = cfg.logging || {};
-  cfg.logging.enabled = true;
   cfg.logging.level = cfg.logging.level || 'info';
 "
 
