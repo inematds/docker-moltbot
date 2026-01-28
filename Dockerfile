@@ -28,10 +28,11 @@ RUN pip3 install --break-system-packages --no-cache-dir \
 RUN useradd -m -s /bin/bash moltbot
 
 # Create directories with proper permissions
-RUN mkdir -p /home/moltbot/.moltbot /home/moltbot/workspace /home/moltbot/logs
+# Create .clawdbot (runtime uses this until moltbot npm fully ships)
+RUN mkdir -p /home/moltbot/.clawdbot /home/moltbot/workspace /home/moltbot/logs
 
 # Copy files BEFORE switching to non-root user (need root for sed/chmod)
-COPY config/moltbot.json.template /home/moltbot/.moltbot/moltbot.json.template
+COPY config/moltbot.json.template /home/moltbot/.clawdbot/clawdbot.json.template
 COPY entrypoint.sh /home/moltbot/entrypoint.sh
 
 # Fix Windows CRLF line endings + set permissions

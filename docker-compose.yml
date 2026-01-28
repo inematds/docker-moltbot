@@ -8,7 +8,7 @@ services:
     ports:
       - "127.0.0.1:18789:18789"  # Loopback only — never expose to 0.0.0.0
     volumes:
-      - moltbot-data:/home/moltbot/.moltbot
+      - moltbot-data:/home/moltbot/.clawdbot  # clawdbot runtime uses ~/.clawdbot (will change to ~/.moltbot when moltbot is fully released)
       - moltbot-workspace:/home/moltbot/workspace
       - moltbot-logs:/home/moltbot/logs
     networks:
