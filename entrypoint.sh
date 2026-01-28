@@ -74,7 +74,7 @@ elif [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-
     cfg.agents = cfg.agents || {};
     cfg.agents.defaults = cfg.agents.defaults || {};
     if (!cfg.agents.defaults.model) {
-      cfg.agents.defaults.model = { model: 'anthropic/claude-sonnet-4' };
+      cfg.agents.defaults.model = { primary: 'anthropic/claude-sonnet-4' };
     }
   "
   LLM_CONFIGURED=true
