@@ -1,29 +1,10 @@
 #!/bin/bash
 set -e
 
-# Determine config directory: prefer ~/.moltbot, fall back to ~/.clawdbot
-if [ -n "$MOLTBOT_STATE_DIR" ]; then
-  CONFIG_DIR="$MOLTBOT_STATE_DIR"
-elif [ -d "$HOME/.moltbot" ]; then
-  CONFIG_DIR="$HOME/.moltbot"
-elif [ -d "$HOME/.clawdbot" ]; then
-  CONFIG_DIR="$HOME/.clawdbot"
-else
-  CONFIG_DIR="$HOME/.moltbot"
-fi
-
-CONFIG_FILE="$CONFIG_DIR/moltbot.json"
-TEMPLATE_FILE="$CONFIG_DIR/moltbot.json.template"
-
-# Fall back to clawdbot naming if moltbot template doesn't exist
-if [ ! -f "$TEMPLATE_FILE" ]; then
-  TEMPLATE_FILE="$CONFIG_DIR/clawdbot.json.template"
-fi
-
-# Also check for existing clawdbot config (migration support)
-if [ ! -f "$CONFIG_FILE" ] && [ -f "$CONFIG_DIR/clawdbot.json" ]; then
-  CONFIG_FILE="$CONFIG_DIR/clawdbot.json"
-fi
+# Config directory: clawdbot runtime uses ~/.clawdbot
+CONFIG_DIR="$HOME/.clawdbot"
+CONFIG_FILE="$CONFIG_DIR/clawdbot.json"
+TEMPLATE_FILE="$CONFIG_DIR/clawdbot.json.template"
 
 # Create config directory if needed
 mkdir -p "$CONFIG_DIR"
