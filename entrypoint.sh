@@ -67,9 +67,17 @@ if [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-he
     cfg.agents = cfg.agents || {};
     cfg.agents.defaults = cfg.agents.defaults || {};
     if (!cfg.agents.defaults.model) {
-      cfg.agents.defaults.model = { primary: 'openrouter/${process.env.DEFAULT_MODEL}' };
+      cfg.agents.defaults.model = { primary: 'openrouter/$DEFAULT_MODEL' };
     }
   "
+
+  # Create .env file with OpenRouter API key so Moltbot can access it
+  echo "🔐 Creating .env file with OpenRouter credentials..."
+  cat > "$CONFIG_DIR/.env" <<EOF
+OPENROUTER_API_KEY=$OPENROUTER_API_KEY
+EOF
+  chmod 600 "$CONFIG_DIR/.env"
+
   echo "   Model: $DEFAULT_MODEL"
 else
   echo "⚠️  OPENROUTER_API_KEY not set! Please configure it in .env"
