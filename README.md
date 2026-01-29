@@ -135,12 +135,14 @@ Você precisa de **pelo menos uma** chave de API de provedor de LLM. Aqui estão
 
 | Provedor | Variável de Ambiente | Obter Chave | Observações |
 |----------|---------------------|-------------|-------------|
-| Anthropic (Claude) | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com/) | Melhor para conversas e tarefas complexas |
+| **Anthropic (Claude)** ⭐ | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com/) | **Recomendado** — melhor suporte, funciona perfeitamente |
 | OpenAI (GPT) | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com/api-keys) | Ótimo para geração de código |
-| OpenRouter (multi-modelo) | `OPENROUTER_API_KEY` | [openrouter.ai](https://openrouter.ai/) | Acesso a vários modelos, **tier gratuito disponível** |
 | Google (Gemini) | `GOOGLE_API_KEY` | [ai.google.dev](https://ai.google.dev/) | Bom tier gratuito |
+| OpenRouter (multi-modelo) | `OPENROUTER_API_KEY` | [openrouter.ai](https://openrouter.ai/) | ⚠️ Suporte limitado nesta versão |
 
-> 💡 **Dica:** O OpenRouter dá acesso a múltiplos modelos (Claude, GPT, Llama, Gemini, DeepSeek) com uma única chave de API — incluindo **modelos gratuitos**. Ótimo pra começar sem gastar.
+> 💡 **Recomendação:** Use **Anthropic direto** para melhor experiência. OpenRouter terá melhor suporte em versões futuras.
+
+> 💡 **Prioridade:** Se você tiver múltiplas chaves configuradas, o sistema usa nesta ordem: Anthropic > OpenRouter > OpenAI > Google.
 
 ### Passo 5: Build e execução
 
@@ -151,6 +153,8 @@ docker compose up -d
 > 💡 **Primeira execução** leva alguns minutos para buildar a imagem (baixa Node.js, FFmpeg, Python, etc). As execuções seguintes iniciam instantaneamente.
 
 > ⚠️ **Erro no Windows `open //./pipe/dockerDesktopLinuxEngine`?** O Docker Desktop não está rodando. Abra-o pelo menu Iniciar e espere até mostrar "Docker is running", depois tente novamente.
+
+> ✨ **Configuração automática:** O script `entrypoint.sh` detecta automaticamente qual provedor de LLM você configurou no `.env` e cria a configuração ideal. Você **não precisa** editar arquivos JSON manualmente!
 
 ### Passo 6: Acesse o Webchat
 
@@ -188,26 +192,24 @@ Você deve ver uma saída como:
 Depois que o container estiver rodando, use esses comandos para ajustar seu setup:
 
 ```bash
-# Execute o assistente de configuração interativo (chaves de API, canais, preferências)
-docker compose exec -it moltbot moltbot configure
-
 # Auto-detecte e corrija problemas de config
-docker compose exec -it moltbot moltbot doctor --fix
+docker exec moltbot clawdbot doctor --fix
 
 # Verifique a saúde geral
-docker compose exec moltbot moltbot status
+docker exec moltbot clawdbot status
 
 # Execute uma auditoria de segurança
-docker compose exec moltbot moltbot security audit
+docker exec moltbot clawdbot security audit
 ```
 
 | Comando | O que faz |
 |---------|-----------|
-| `moltbot configure` | Assistente interativo — configure chaves de API, canais (Telegram, WhatsApp, etc.), preferências de modelo |
-| `moltbot doctor --fix` | Auto-detecta e corrige problemas de config (ex: Telegram configurado mas não habilitado) |
-| `moltbot doctor` | Mesma verificação, mas só **mostra** os problemas sem corrigir |
-| `moltbot status` | Mostra status do gateway, canais conectados, info do modelo |
-| `moltbot security audit` | Verifica seu setup contra boas práticas de segurança |
+| `clawdbot doctor --fix` | Auto-detecta e corrige problemas de config (ex: Telegram configurado mas não habilitado) |
+| `clawdbot doctor` | Mesma verificação, mas só **mostra** os problemas sem corrigir |
+| `clawdbot status` | Mostra status do gateway, canais conectados, info do modelo |
+| `clawdbot security audit` | Verifica seu setup contra boas práticas de segurança |
+
+> 💡 **Nota:** O comando CLI ainda é `clawdbot` nesta versão (2026.1.24-3). A migração para `moltbot` está em andamento.
 
 ---
 
@@ -231,7 +233,7 @@ O Telegram é a forma mais fácil de falar com seu Moltbot de qualquer lugar.
 6. **Mande mensagem pro seu bot** no Telegram — ele vai te dar um **código de pareamento**
 7. **Aprove o pareamento** dentro do container:
    ```bash
-   docker compose exec moltbot moltbot pairing approve telegram <code>
+   docker exec moltbot clawdbot pairing approve telegram <code>
    ```
 
 > 💡 O sistema de pareamento garante que só usuários aprovados possam falar com seu bot. É uma funcionalidade de segurança — sem aprovação, o bot não responde a estranhos.
@@ -254,7 +256,7 @@ Você pode conectar o Moltbot ao WhatsApp via pareamento por QR code.
 
 1. **Execute o comando de login:**
    ```bash
-   docker compose exec -it moltbot moltbot channels login whatsapp
+   docker exec -it moltbot clawdbot channels login whatsapp
    ```
 2. **Escaneie o QR code** com seu WhatsApp (Configurações → Aparelhos Conectados → Conectar um Aparelho)
 3. **Pronto!** Seu Moltbot agora está conectado ao WhatsApp
@@ -309,7 +311,7 @@ Este setup Docker implementa **7 de 10** medidas de hardening de segurança auto
 
 ### Auditoria de segurança:
 ```bash
-docker compose exec moltbot moltbot security audit
+docker exec moltbot clawdbot security audit
 ```
 
 ### Modelo de ameaças (simplificado)
@@ -348,9 +350,11 @@ Volumes Docker persistem seus dados entre reinícios e rebuilds do container.
 
 | Volume | Caminho no Container | Finalidade |
 |--------|---------------------|------------|
-| `moltbot-data` | `/home/moltbot/.moltbot` | Config, dados de sessão, tokens de auth, info de pareamento |
+| `moltbot-data` | `/home/moltbot/.clawdbot` | Config, dados de sessão, tokens de auth, info de pareamento |
 | `moltbot-workspace` | `/home/moltbot/workspace` | Workspace do agente — AGENTS.md, arquivos de memória, arquivos de projeto |
 | `moltbot-logs` | `/home/moltbot/logs` | Arquivos de log (NÃO em /tmp — sobrevive a reinícios) |
+
+> 💡 **Nota:** O diretório de config ainda é `~/.clawdbot` nesta versão. Será migrado para `~/.moltbot` em versões futuras.
 
 ### Faça backup dos seus dados:
 ```bash
@@ -382,11 +386,10 @@ docker compose logs --tail 100    # Last 100 lines
 # === Acesso ao shell ===
 docker compose exec moltbot bash  # Open shell inside container
 
-# === Moltbot CLI ===
-docker compose exec moltbot moltbot status          # Gateway status
-docker compose exec moltbot moltbot configure       # Interactive setup
-docker compose exec moltbot moltbot doctor --fix    # Auto-fix issues
-docker compose exec moltbot moltbot security audit  # Security check
+# === Clawdbot CLI ===
+docker exec moltbot clawdbot status          # Gateway status
+docker exec moltbot clawdbot doctor --fix    # Auto-fix issues
+docker exec moltbot clawdbot security audit  # Security check
 
 # === Atualizar Moltbot ===
 docker compose build --no-cache   # Rebuild image (pulls latest moltbot)
@@ -510,7 +513,7 @@ Turbine seu Moltbot com estas ferramentas adicionais:
 
 ```bash
 # Instalar Remotion Skills para Codex
-docker compose exec moltbot bash -c '
+docker exec moltbot bash -c '
   git clone https://github.com/inematds/remotion-skills.git /tmp/remotion-skills
   mkdir -p .codex/skills
   cp -r /tmp/remotion-skills/skills/remotion .codex/skills/
@@ -523,16 +526,40 @@ docker compose exec moltbot bash -c '
 
 Estratégia recomendada de modelos para diferentes tarefas:
 
-| Modelo | Provedor | Caso de Uso | Custo |
-|--------|----------|-------------|-------|
-| Claude Opus 4.5 | Anthropic | Assistente principal — conversas, tarefas complexas | Pago (API ou plano Max) |
-| gpt-5.2-codex | OpenAI | Geração de código (prioridade) | Pago (plano Team) |
-| Gemini 2.0 Flash | Google | Tarefas rápidas, consultas simples | Tier gratuito disponível |
-| Modelos gratuitos | OpenRouter | Sub-agentes, tarefas secundárias | Gratuito |
+| Modelo | Provedor | Nome do Modelo | Caso de Uso | Custo |
+|--------|----------|----------------|-------------|-------|
+| **Claude Opus 4.5** | Anthropic | `anthropic/claude-opus-4-5` | Assistente principal — conversas, tarefas complexas (padrão) | Pago (API) |
+| **Claude 3.5 Sonnet** | Anthropic | `anthropic/claude-3-5-sonnet-20241022` | Alternativa mais rápida e econômica | Pago (API) |
+| **GPT-4** | OpenAI | `openai/gpt-4` | Geração de código, análise | Pago (API) |
+| **Gemini 2.0 Flash** | Google | `google/gemini-2.0-flash` | Tarefas rápidas, consultas simples | Tier gratuito disponível |
 
-**Modelos gratuitos no OpenRouter:** DeepSeek R1, Llama 3.1 405B, Llama 3.3 70B, Gemini 2.0 Flash, Qwen3 Coder
+> ⚠️ **Importante:** Use os **nomes exatos** dos modelos listados acima. Modelos como `claude-sonnet-4.5` (sem versão) não existem e causarão erro.
 
-> 💡 Configure preferências de modelo com `docker compose exec -it moltbot moltbot configure`
+> 💡 **Padrão:** Se você não especificar um modelo, o Anthropic usará automaticamente `claude-opus-4-5` como padrão.
+
+### Como mudar o modelo
+
+Se você quiser usar um modelo diferente do padrão, use o script `change-model.sh`:
+
+```bash
+# Mudar para Claude 3.5 Sonnet (mais rápido e econômico)
+./change-model.sh "anthropic/claude-3-5-sonnet-20241022"
+
+# Ou mudar diretamente:
+docker exec moltbot sh -c "cat > /tmp/change-model.js << 'EOJS'
+const fs = require('fs');
+const cfg = JSON.parse(fs.readFileSync('/home/moltbot/.clawdbot/clawdbot.json', 'utf8'));
+cfg.agents = cfg.agents || {};
+cfg.agents.defaults = cfg.agents.defaults || {};
+cfg.agents.defaults.model = { primary: 'anthropic/claude-3-5-sonnet-20241022' };
+fs.writeFileSync('/home/moltbot/.clawdbot/clawdbot.json', JSON.stringify(cfg, null, 2));
+EOJS
+node /tmp/change-model.js"
+
+docker compose restart
+```
+
+> ⚠️ **Use nomes exatos:** Modelos devem incluir o prefixo do provedor (ex: `anthropic/`, `openai/`, `google/`) e a versão completa.
 
 ---
 
@@ -591,8 +618,20 @@ Estratégia recomendada de modelos para diferentes tarefas:
 | Erros de API / rate limiting | Verifique se as chaves de API no `.env` estão corretas e têm créditos |
 | Não consegue acessar o webchat remotamente | Use túnel SSH: `ssh -L 18789:localhost:18789 user@server` |
 | Bot responde devagar | Verifique sua conexão com a internet; considere um modelo de LLM mais rápido |
-| Mensagem "Pairing required" | Isso é esperado — aprove com `moltbot pairing approve <channel> <code>` |
+| Mensagem "Pairing required" | Isso é esperado — aprove com `clawdbot pairing approve <channel> <code>` |
 | Mudanças de config não aplicadas | Reinicie: `docker compose restart` |
+
+### Problemas de Configuração
+
+| Problema | Causa | Solução |
+|----------|-------|---------|
+| **"Unknown model: anthropic/claude-sonnet-4.5"** | Nome de modelo inválido | Use `anthropic/claude-opus-4-5` ou `anthropic/claude-3-5-sonnet-20241022`. O modelo `claude-sonnet-4.5` não existe. |
+| **Bot não responde após mudar o modelo** | Config corrompida ou modelo inválido | Execute `docker compose down -v` (⚠️ apaga dados), depois `docker compose up -d` para começar do zero |
+| **Mudanças no .env não aplicadas** | `docker compose restart` não recarrega variáveis de ambiente | Use `docker compose down && docker compose up -d` para recarregar o `.env` |
+| **Config manual não funciona** | Edição manual causou inconsistências | ⚠️ **NÃO edite** `/home/moltbot/.clawdbot/clawdbot.json` manualmente. Deixe o `entrypoint.sh` configurar automaticamente via variáveis de ambiente no `.env` |
+| **OpenRouter não funciona** | Esta versão tem suporte limitado ao OpenRouter | Use Anthropic, OpenAI ou Google diretamente. OpenRouter será melhor suportado em versões futuras. |
+
+> 💡 **Melhor prática:** Configure tudo via arquivo `.env` e deixe o `entrypoint.sh` fazer a configuração automática. Evite editar `clawdbot.json` manualmente!
 
 ---
 
