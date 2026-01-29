@@ -67,7 +67,7 @@ if [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-he
     cfg.agents = cfg.agents || {};
     cfg.agents.defaults = cfg.agents.defaults || {};
     if (!cfg.agents.defaults.model) {
-      cfg.agents.defaults.model = { primary: 'openrouter/$DEFAULT_MODEL' };
+      cfg.agents.defaults.model = { primary: '$DEFAULT_MODEL', profile: 'openrouter:default' };
     }
   "
 
