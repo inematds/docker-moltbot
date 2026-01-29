@@ -53,20 +53,13 @@ if [ -n "$TELEGRAM_BOT_TOKEN" ]; then
   "
 fi
 
-# Detect and configure LLM provider
-# Priority: Anthropic direct > OpenRouter > OpenAI > Google
-LLM_CONFIGURED=false
+# Configure OpenRouter as LLM provider
+if [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-here" ]; then
+  echo "🧠 OpenRouter configured — multi-model gateway active"
 
-if [ -n "$ANTHROPIC_API_KEY" ] && [ "$ANTHROPIC_API_KEY" != "sk-ant-your-key-here" ]; then
-  echo "🧠 Anthropic API key detected — using Anthropic direct"
-  inject_json "$CONFIG_FILE" "
-    cfg.auth = cfg.auth || {};
-    cfg.auth.profiles = cfg.auth.profiles || {};
-    cfg.auth.profiles['anthropic:default'] = { provider: 'anthropic', mode: 'token' };
-  "
-  LLM_CONFIGURED=true
-elif [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-here" ]; then
-  echo "🧠 OpenRouter API key detected — using OpenRouter"
+  # Set default model from env var or use Claude Sonnet 4.5
+  DEFAULT_MODEL="${DEFAULT_MODEL:-anthropic/claude-sonnet-4-5}"
+
   inject_json "$CONFIG_FILE" "
     cfg.auth = cfg.auth || {};
     cfg.auth.profiles = cfg.auth.profiles || {};
@@ -74,30 +67,13 @@ elif [ -n "$OPENROUTER_API_KEY" ] && [ "$OPENROUTER_API_KEY" != "sk-or-your-key-
     cfg.agents = cfg.agents || {};
     cfg.agents.defaults = cfg.agents.defaults || {};
     if (!cfg.agents.defaults.model) {
-      cfg.agents.defaults.model = { primary: 'openrouter/anthropic/claude-sonnet-4-5' };
+      cfg.agents.defaults.model = { primary: 'openrouter/${process.env.DEFAULT_MODEL}' };
     }
   "
-  LLM_CONFIGURED=true
-elif [ -n "$OPENAI_API_KEY" ] && [ "$OPENAI_API_KEY" != "sk-your-key-here" ]; then
-  echo "🧠 OpenAI API key detected — using OpenAI"
-  inject_json "$CONFIG_FILE" "
-    cfg.auth = cfg.auth || {};
-    cfg.auth.profiles = cfg.auth.profiles || {};
-    cfg.auth.profiles['openai:default'] = { provider: 'openai', mode: 'token' };
-  "
-  LLM_CONFIGURED=true
-elif [ -n "$GOOGLE_API_KEY" ] && [ "$GOOGLE_API_KEY" != "your-key-here" ]; then
-  echo "🧠 Google API key detected — using Google"
-  inject_json "$CONFIG_FILE" "
-    cfg.auth = cfg.auth || {};
-    cfg.auth.profiles = cfg.auth.profiles || {};
-    cfg.auth.profiles['google:default'] = { provider: 'google', mode: 'token' };
-  "
-  LLM_CONFIGURED=true
-fi
-
-if [ "$LLM_CONFIGURED" = "false" ]; then
-  echo "⚠️  No valid LLM API key found! Set at least one in .env"
+  echo "   Model: $DEFAULT_MODEL"
+else
+  echo "⚠️  OPENROUTER_API_KEY not set! Please configure it in .env"
+  echo "   Get your key at: https://openrouter.ai/"
 fi
 
 # Docker requires binding to 0.0.0.0 inside the container for port mapping to work.
@@ -123,7 +99,8 @@ echo ""
 echo "╔══════════════════════════════════════════════════════════╗"
 echo "║  🌐 Webchat: http://localhost:18789/chat                ║"
 echo "║  🔑 Token: use your GATEWAY_AUTH_TOKEN from .env        ║"
-echo "║  📋 Status: docker exec moltbot clawdbot status        ║"
+echo "║  🧠 Model: ${DEFAULT_MODEL:-anthropic/claude-sonnet-4-5} ║"
+echo "║  📋 Status: docker exec moltbot clawdbot status          ║"
 echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
 exec "$@"

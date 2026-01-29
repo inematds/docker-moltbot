@@ -96,15 +96,21 @@ docker compose exec moltbot moltbot pairing approve telegram <code>  # Approve T
 - **Security options**: `no-new-privileges:true`, user isolation
 - **DM policy**: Defaults to `pairing` (users must be approved before chatting)
 
-### Multi-LLM Provider Configuration
-The entrypoint.sh automatically configures the LLM provider based on which API keys are present:
+### LLM Provider Configuration (OpenRouter Only)
+The entrypoint.sh configures OpenRouter as the unified LLM gateway:
 
-1. **Anthropic direct**: If `ANTHROPIC_API_KEY` is set and not a placeholder
-2. **OpenRouter**: If `OPENROUTER_API_KEY` is set — automatically routes anthropic/openai/google requests through OpenRouter
-3. **OpenAI direct**: If `OPENAI_API_KEY` is set
-4. **Google direct**: If `GOOGLE_API_KEY` is set
+**OpenRouter configuration** (entrypoint.sh:56-68):
+- Sets up `openrouter:default` auth profile
+- Configures default model from `DEFAULT_MODEL` env var (defaults to `anthropic/claude-sonnet-4-5`)
+- Provides access to 200+ models through a single API key
 
-**OpenRouter routing** (entrypoint.sh:73-84): When OpenRouter is detected, the script sets `auth.order` to route all provider requests through OpenRouter and sets a default model (`anthropic/claude-3.5-sonnet`).
+**Supported models via OpenRouter:**
+- Claude: Sonnet 4.5, Opus 4, Haiku 3.5
+- GPT: GPT-4o, GPT-4 Turbo, o1-preview
+- Gemini: 2.0 Flash (free), Pro
+- Open Source: Llama 3.3 70B (free), DeepSeek R1 (free)
+
+**Model selection**: Set `DEFAULT_MODEL` in .env to choose which model to use by default. Can be changed at any time by updating .env and restarting the container.
 
 ## Key Files
 
@@ -313,13 +319,12 @@ Gateway is bound to loopback only. For remote access:
 | Variable | Required | Purpose | Example |
 |----------|----------|---------|---------|
 | `GATEWAY_AUTH_TOKEN` | Yes | Protects gateway API | `openssl rand -hex 24` |
-| `ANTHROPIC_API_KEY` | One of these | Claude models | `sk-ant-...` |
-| `OPENAI_API_KEY` | One of these | GPT models | `sk-...` |
-| `OPENROUTER_API_KEY` | One of these | Multi-model gateway | `sk-or-...` |
-| `GOOGLE_API_KEY` | One of these | Gemini models | `...` |
+| `OPENROUTER_API_KEY` | Yes | OpenRouter API key (access to 200+ models) | `sk-or-v1-...` |
+| `DEFAULT_MODEL` | No | Default LLM model to use | `anthropic/claude-sonnet-4-5` |
 | `TELEGRAM_BOT_TOKEN` | No | Telegram channel | `123456:ABC...` |
 | `BRAVE_API_KEY` | No | Web search tool | `...` |
 | `LOG_LEVEL` | No | Logging verbosity | `info` (default) |
+| `GATEWAY_PORT` | No | Gateway port | `18789` (default) |
 
 ## Additional Documentation
 

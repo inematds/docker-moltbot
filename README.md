@@ -33,7 +33,7 @@ Setup Docker para o [Moltbot](https://molt.bot) — um assistente pessoal de IA 
 - 📱 **Multi-canal** — Telegram, WhatsApp, Discord, Slack, webchat e mais
 - 🎙️ **Transcrição de áudio** — Faster Whisper incluso (opcional)
 - 🛠️ **Ferramentas integradas** — acesso ao shell, busca na web, controle de navegador, execução de código
-- 🧠 **Multi-LLM** — Claude, GPT, Gemini, Llama, DeepSeek via OpenRouter
+- 🧠 **200+ modelos via OpenRouter** — Claude, GPT, Gemini, Llama, DeepSeek e mais com uma única API key
 - 🪟 **Compatível com Windows** — `.gitattributes` força terminações LF, Dockerfile corrige CRLF
 - 🔄 **Auto-restart** — política de reinício `unless-stopped`
 - 🌐 **Rede segura** — gateway vinculado ao loopback, isolamento de rede Docker disponível
@@ -103,12 +103,13 @@ Abra o arquivo `.env` e substitua os valores de exemplo pelas suas chaves reais:
 
 ```env
 # ❌ ERRADO — esses são placeholders, não vão funcionar:
-ANTHROPIC_API_KEY=sk-ant-your-key-here
+OPENROUTER_API_KEY=sk-or-your-key-here
 GATEWAY_AUTH_TOKEN=your-secure-token-here
 
 # ✅ CERTO — suas chaves reais:
-ANTHROPIC_API_KEY=sk-ant-abc123-your-actual-real-key
+OPENROUTER_API_KEY=sk-or-v1-abc123-your-actual-real-key
 GATEWAY_AUTH_TOKEN=a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6
+DEFAULT_MODEL=anthropic/claude-sonnet-4-5
 ```
 
 ### Passo 3: Gere um token seguro para o gateway
@@ -129,20 +130,51 @@ openssl rand -hex 24
 
 Copie o token gerado para o seu arquivo `.env` como `GATEWAY_AUTH_TOKEN`.
 
-### Passo 4: Escolha seu provedor de LLM
+### Passo 4: Configure sua chave OpenRouter
 
-Você precisa de **pelo menos uma** chave de API de provedor de LLM. Aqui estão as opções:
+Este setup usa **OpenRouter** como gateway unificado de LLMs. Com uma única API key, você tem acesso a 200+ modelos:
 
-| Provedor | Variável de Ambiente | Obter Chave | Observações |
-|----------|---------------------|-------------|-------------|
-| **Anthropic (Claude)** ⭐ | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com/) | **Recomendado** — melhor suporte, funciona perfeitamente |
-| OpenAI (GPT) | `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com/api-keys) | Ótimo para geração de código |
-| Google (Gemini) | `GOOGLE_API_KEY` | [ai.google.dev](https://ai.google.dev/) | Bom tier gratuito |
-| OpenRouter (multi-modelo) | `OPENROUTER_API_KEY` | [openrouter.ai](https://openrouter.ai/) | ⚠️ Suporte limitado nesta versão |
+| Categoria | Modelos Disponíveis |
+|-----------|---------------------|
+| **Claude** | Sonnet 4.5, Opus 4, Haiku 3.5, etc. |
+| **GPT** | GPT-4o, GPT-4 Turbo, o1-preview, etc. |
+| **Gemini** | Gemini 2.0 Flash (FREE), Pro, etc. |
+| **Open Source** | Llama 3.3 70B (FREE), DeepSeek R1 (FREE), Qwen, etc. |
+| **Especializados** | Mistral, Claude, Grok, e mais |
 
-> 💡 **Recomendação:** Use **Anthropic direto** para melhor experiência. OpenRouter terá melhor suporte em versões futuras.
+**Obtenha sua chave:**
+1. Acesse [openrouter.ai](https://openrouter.ai/)
+2. Faça login com Google/GitHub
+3. Vá para [Keys](https://openrouter.ai/keys) e crie uma nova API key
+4. Copie a key (começa com `sk-or-v1-...`)
+5. Cole no seu `.env` como `OPENROUTER_API_KEY`
 
-> 💡 **Prioridade:** Se você tiver múltiplas chaves configuradas, o sistema usa nesta ordem: Anthropic > OpenRouter > OpenAI > Google.
+**Escolha seu modelo padrão:**
+
+Edite `DEFAULT_MODEL` no `.env` para escolher qual modelo usar:
+
+```env
+# Opção 1: Claude Sonnet 4.5 (melhor qualidade, recomendado)
+DEFAULT_MODEL=anthropic/claude-sonnet-4-5
+
+# Opção 2: Claude 3.5 Sonnet (ótimo custo-benefício)
+DEFAULT_MODEL=anthropic/claude-3.5-sonnet
+
+# Opção 3: GPT-4o (excelente para código)
+DEFAULT_MODEL=openai/gpt-4o
+
+# Opção 4: Gemini 2.0 Flash (GRÁTIS, muito rápido)
+DEFAULT_MODEL=google/gemini-2.0-flash-exp
+
+# Opção 5: Llama 3.3 70B (GRÁTIS, open source)
+DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct
+```
+
+> 💡 **Dica:** Você pode trocar de modelo a qualquer momento editando o `.env` e executando `docker compose restart`
+
+> 💰 **Modelos Grátis:** Gemini 2.0 Flash, Llama 3.3 70B e DeepSeek R1 são totalmente gratuitos no OpenRouter. Perfeito para testar!
+
+> 📊 **Preços e limites:** Consulte [openrouter.ai/models](https://openrouter.ai/models) para ver preços, limites de contexto e velocidade de cada modelo.
 
 ### Passo 5: Build e execução
 
