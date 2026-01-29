@@ -135,7 +135,7 @@ sudo apt-get install -y auditd
 sudo systemctl enable auditd
 
 # Monitor file changes on sensitive paths
-sudo auditctl -w /home/moltbot/.moltbot/ -p rwa -k moltbot-config
+sudo auditctl -w /home/moltbot/.clawdbot/ -p rwa -k moltbot-config
 sudo auditctl -w /root/.ssh/ -p rwa -k ssh-keys
 
 # Log rotation (keep 90 days)
@@ -337,15 +337,15 @@ These apply to **all** scenarios:
 docker compose exec moltbot bash
 
 # Check config permissions
-stat -c '%a' ~/.moltbot/moltbot.json 2>/dev/null || stat -c '%a' ~/.clawdbot/clawdbot.json
+stat -c '%a' ~/.clawdbot/clawdbot.json
 # Expected: 600
 
 # Check gateway binding
-grep -o '"bind":"[^"]*"' ~/.moltbot/moltbot.json 2>/dev/null
+grep -o '"bind":"[^"]*"' ~/.clawdbot/clawdbot.json
 # Expected: "bind":"lan" (required inside Docker; host is restricted to 127.0.0.1 by docker-compose)
 
 # Check DM policy
-grep -o '"dmPolicy":"[^"]*"' ~/.moltbot/moltbot.json 2>/dev/null
+grep -o '"dmPolicy":"[^"]*"' ~/.clawdbot/clawdbot.json
 # Expected: "dmPolicy":"pairing"
 
 # Check logging
@@ -369,6 +369,351 @@ sudo fail2ban-client status sshd
 
 # Check open ports
 ss -tlnp | grep -E '18789|22'
+```
+
+---
+
+---
+
+## 📁 Arquivos de Configuração — Localizações e Segurança
+
+### Estrutura de Diretórios
+
+**Dentro do container:**
+
+```
+/home/moltbot/
+├── .clawdbot/                           # Diretório principal de configuração
+│   ├── clawdbot.json                    # ⚠️ CRÍTICO - Contém tokens e configurações
+│   ├── clawdbot.json.bak                # Backup automático (criado pelo doctor)
+│   ├── credentials/                     # OAuth tokens, refresh tokens
+│   └── agents/
+│       └── main/
+│           └── sessions/
+│               └── sessions.json        # Sessões ativas, histórico de conversas
+├── workspace/                           # Workspace do agente
+│   ├── AGENTS.md                        # ⚠️ Regras de segurança do agente
+│   └── projects/                        # Arquivos de projetos do usuário
+└── logs/                                # Logs persistentes
+    └── moltbot-YYYY-MM-DD.log          # Logs diários
+```
+
+**No host (volumes Docker):**
+
+```bash
+# Ver onde os volumes estão montados:
+docker volume inspect moltbot-data
+
+# Localização típica (Linux):
+/var/lib/docker/volumes/moltbot-data/_data/
+
+# Localização típica (Windows com WSL):
+\\wsl$\docker-desktop-data\data\docker\volumes\moltbot-data\_data\
+```
+
+---
+
+### 🔐 Arquivos Sensíveis — O Que Proteger
+
+#### 1. **`clawdbot.json`** — Configuração Principal
+
+**Localização:** `/home/moltbot/.clawdbot/clawdbot.json`
+
+**Contém:**
+- Gateway auth token (GATEWAY_AUTH_TOKEN)
+- API keys (se configuradas diretamente no JSON)
+- Configurações de canais (Telegram bot token, WhatsApp sessão)
+- Preferências de modelo e routing
+
+**Permissões:** `600` (somente owner read/write)
+
+**Como acessar:**
+```bash
+# Dentro do container
+docker exec moltbot cat /home/moltbot/.clawdbot/clawdbot.json
+
+# Copiar para o host para backup
+docker cp moltbot:/home/moltbot/.clawdbot/clawdbot.json ./backup-config.json
+```
+
+**⚠️ NUNCA:**
+- Commitar este arquivo no git
+- Enviar em canais públicos (Discord, fóruns)
+- Fazer backup não-criptografado em cloud pública
+- Editar manualmente (use variáveis de ambiente no `.env` quando possível)
+
+---
+
+#### 2. **`.env`** — Variáveis de Ambiente (Secrets)
+
+**Localização:** `/caminho/do/repo/docker-moltbot/.env` (no host)
+
+**Contém:**
+- `ANTHROPIC_API_KEY` — Chave de API Anthropic (Claude)
+- `OPENAI_API_KEY` — Chave de API OpenAI (GPT)
+- `GOOGLE_API_KEY` — Chave de API Google (Gemini)
+- `OPENROUTER_API_KEY` — Chave de API OpenRouter
+- `GATEWAY_AUTH_TOKEN` — Token de autenticação do gateway
+- `TELEGRAM_BOT_TOKEN` — Token do bot Telegram
+
+**Permissões recomendadas:**
+```bash
+chmod 600 .env
+```
+
+**Proteção:**
+- ✅ Já está no `.gitignore` (não vai pro GitHub)
+- ✅ Não é copiado para dentro da imagem Docker
+- ✅ Apenas passado como variáveis de ambiente ao container
+
+**⚠️ CRÍTICO:**
+- Se alguém tiver acesso ao `.env`, tem acesso total ao seu sistema
+- Nunca compartilhe este arquivo
+- Use `.env.example` como template (sem valores reais)
+
+---
+
+#### 3. **`credentials/`** — OAuth Tokens
+
+**Localização:** `/home/moltbot/.clawdbot/credentials/`
+
+**Contém:**
+- Refresh tokens de OAuth (Gmail, Google Calendar, etc.)
+- Access tokens temporários
+- Chaves de sessão
+
+**Permissões:** `700` (diretório), `600` (arquivos)
+
+**Risco:** Permite acesso às suas contas conectadas (Gmail, Calendar, etc.)
+
+---
+
+#### 4. **`sessions.json`** — Histórico de Conversas
+
+**Localização:** `/home/moltbot/.clawdbot/agents/main/sessions/sessions.json`
+
+**Contém:**
+- Histórico completo de mensagens
+- Contexto de conversas ativas
+- Memória de longo prazo do agente
+
+**Risco Potencial:**
+- Pode conter informações sensíveis discutidas com o bot
+- Prompts, respostas, arquivos compartilhados
+
+**Recomendação:**
+```bash
+# Habilite redação de dados sensíveis nos logs
+# No clawdbot.json:
+{
+  "logging": {
+    "redactSensitive": "tools"  # Redige argumentos de ferramentas
+  }
+}
+```
+
+---
+
+#### 5. **Logs** — Trilha de Auditoria
+
+**Localização:** `/home/moltbot/logs/*.log`
+
+**Contém:**
+- Chamadas de API (pode mostrar modelos usados)
+- Erros e stack traces
+- Conexões de rede (IPs, timestamps)
+
+**Retenção padrão:** Indefinida (cresce com o tempo)
+
+**Rotação de logs recomendada:**
+```bash
+# Criar /etc/logrotate.d/moltbot no host:
+/var/lib/docker/volumes/moltbot-logs/_data/*.log {
+    daily
+    rotate 30
+    compress
+    delaycompress
+    missingok
+    notifempty
+}
+```
+
+---
+
+### 🛡️ Medidas de Proteção Automáticas
+
+**O que o `entrypoint.sh` faz automaticamente:**
+
+```bash
+# 1. Cria diretório de config com permissões restritas
+mkdir -p "$HOME/.clawdbot"
+
+# 2. Injeta secrets via variáveis de ambiente (não texto puro no JSON)
+if [ -n "$ANTHROPIC_API_KEY" ]; then
+  inject_json "$CONFIG_FILE" "cfg.auth.profiles['anthropic:default'] = { provider: 'anthropic', mode: 'token' };"
+fi
+
+# 3. Define permissões seguras no arquivo de config
+chmod 600 "$CONFIG_FILE"
+
+# 4. Configura bind seguro (lan dentro do container, loopback no host)
+inject_json "$CONFIG_FILE" "cfg.gateway.bind = 'lan';"
+```
+
+**O que o `docker-compose.yml` faz:**
+
+```yaml
+services:
+  moltbot:
+    # Porta só acessível do localhost (não de fora)
+    ports:
+      - "127.0.0.1:18789:18789"
+
+    # Container roda como usuário não-root
+    user: moltbot
+
+    # Sem escalação de privilégios
+    security_opt:
+      - no-new-privileges:true
+
+    # Filesystem read-only onde possível
+    read_only: false  # (precisa escrever em config)
+```
+
+---
+
+### 📋 Checklist de Segurança de Configuração
+
+#### ✅ Nível Básico (obrigatório)
+- [ ] `.env` não está commitado no git
+- [ ] `.env` tem permissões `600` (`chmod 600 .env`)
+- [ ] Gateway só acessível via `127.0.0.1` (não `0.0.0.0`)
+- [ ] `dmPolicy` está em `pairing` ou `allowlist`
+- [ ] Logging está habilitado (`level: "info"`)
+
+#### ✅ Nível Intermediário (recomendado)
+- [ ] Backup de `clawdbot.json` é criptografado
+- [ ] Volumes Docker têm backup regular
+- [ ] `redactSensitive: "tools"` está habilitado
+- [ ] Firewall (UFW) bloqueia porta 18789 de fora
+- [ ] Rotação de logs configurada
+
+#### ✅ Nível Avançado (máxima segurança)
+- [ ] Volumes Docker são encrypted-at-rest
+- [ ] Disco do host tem LUKS full-disk encryption
+- [ ] Acesso remoto via Tailscale (não SSH direto)
+- [ ] AppArmor/SELinux habilitado no container
+- [ ] Auditd monitora mudanças em arquivos de config
+- [ ] Backup automático para storage criptografado off-site
+
+---
+
+### 🔍 Auditoria de Configuração
+
+**Verifique se seus arquivos estão protegidos:**
+
+```bash
+# 1. Permissões do arquivo de config
+docker exec moltbot stat -c '%a %U:%G %n' /home/moltbot/.clawdbot/clawdbot.json
+# Esperado: 600 moltbot:moltbot
+
+# 2. Gateway bind
+docker exec moltbot cat /home/moltbot/.clawdbot/clawdbot.json | grep -o '"bind":"[^"]*"'
+# Esperado: "bind":"lan"
+
+# 3. Política de DM
+docker exec moltbot cat /home/moltbot/.clawdbot/clawdbot.json | grep -o '"dmPolicy":"[^"]*"'
+# Esperado: "dmPolicy":"pairing"
+
+# 4. .env não está no git
+git ls-files | grep "^.env$"
+# Esperado: (saída vazia)
+
+# 5. Porta só acessível localmente
+ss -tlnp | grep 18789
+# Esperado: 127.0.0.1:18789 (não 0.0.0.0:18789)
+
+# 6. Auditoria completa
+docker exec moltbot clawdbot security audit
+```
+
+---
+
+### 💾 Backup Seguro de Configuração
+
+**Backup manual (criptografado):**
+
+```bash
+# 1. Backup dos volumes Docker (criptografado)
+docker run --rm \
+  -v moltbot-data:/data \
+  -v $(pwd):/backup \
+  alpine tar czf - /data | \
+  gpg --symmetric --cipher-algo AES256 -o /backup/moltbot-data-$(date +%Y%m%d).tar.gz.gpg
+
+# 2. Backup do .env (criptografado)
+gpg --symmetric --cipher-algo AES256 .env -o .env.backup.gpg
+
+# 3. Armazenar em local seguro off-site
+# - Cloud com criptografia (S3 + KMS, etc.)
+# - Disco externo criptografado
+# - NUNCA armazenar não-criptografado em Dropbox, Google Drive público, etc.
+```
+
+**Restauração:**
+
+```bash
+# 1. Descriptografar backup
+gpg -d moltbot-data-20260128.tar.gz.gpg | docker run --rm -i \
+  -v moltbot-data:/data \
+  alpine tar xzf - -C /
+
+# 2. Reiniciar container
+docker compose restart
+```
+
+---
+
+### ⚠️ O Que NUNCA Fazer
+
+❌ **NUNCA commite `.env` no git**
+```bash
+# Se acidentalmente commitou:
+git rm --cached .env
+git commit -m "Remove .env from repo"
+git push
+
+# E revogue todas as API keys imediatamente!
+```
+
+❌ **NUNCA edite `clawdbot.json` manualmente**
+- Use variáveis de ambiente no `.env` quando possível
+- Use `clawdbot doctor --fix` para correções automáticas
+- Se precisar editar, faça backup primeiro
+
+❌ **NUNCA exponha a porta 18789 publicamente**
+```yaml
+# ERRADO:
+ports:
+  - "0.0.0.0:18789:18789"  # ❌ Exposto ao mundo
+
+# CERTO:
+ports:
+  - "127.0.0.1:18789:18789"  # ✅ Só local
+```
+
+❌ **NUNCA desabilite logging para "performance"**
+- Logging é sua trilha de auditoria
+- Essencial para investigar incidentes
+- Use `redactSensitive` se preocupado com privacidade
+
+❌ **NUNCA rode o container como root**
+```yaml
+# ERRADO:
+user: root  # ❌ Risco de segurança
+
+# CERTO:
+user: moltbot  # ✅ Não-root (já é o padrão)
 ```
 
 ---
